@@ -3,7 +3,7 @@
 #include "at.h"
 
 #define at_cmdLenMax 128
-#define at_dataLenMax 2048
+#define at_dataLenMax 128
 
 at_stateType  at_state;
 
@@ -60,10 +60,10 @@ void at_process_loop()
   }
   else if(at_state == at_statIpSended)
   {
-    at_ipDataSending(at_dataLine);//UartDev.rcv_buff.pRcvMsgBuff);
+    //at_ipDataSending(at_dataLine);//UartDev.rcv_buff.pRcvMsgBuff);
   }
   else if(at_state == at_statIpTraning)
   {
-    at_ipDataSendNow();//UartDev.rcv_buff.pRcvMsgBuff);
+    //at_ipDataSendNow();//UartDev.rcv_buff.pRcvMsgBuff);
   }
 }

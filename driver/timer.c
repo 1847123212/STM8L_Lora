@@ -10,15 +10,32 @@ void tim4_config(void)
   - In this example we need to generate a time base equal to 1 ms
    so TIM4_PERIOD = (0.001 * 125000 - 1) = 124 */
 
-  /* Time base configuration */
-  TIM4_TimeBaseInit(TIM4_Prescaler_128, 124);//1ms period
-  /* Clear TIM4 update flag */
-  TIM4_ClearFlag(TIM4_FLAG_Update);
-  /* Enable update interrupt */
-  TIM4_ITConfig(TIM4_IT_Update, ENABLE);
-  /* enable interrupts */
-  enableInterrupts();
+    /* Time base configuration */
+    //TIM4_TimeBaseInit(TIM4_Prescaler_128, 124);//1ms period
+    /* Set the Autoreload value */
+    TIM4->ARR = (uint8_t)(124);
+    /* Set the Prescaler value */
+    TIM4->PSCR = (uint8_t)(TIM4_Prescaler_128);
+    /* Generate an update event to reload the Prescaler value immediately */
+    TIM4->EGR = TIM4_EventSource_Update;
 
-  /* Enable TIM4 */
-  TIM4_Cmd(ENABLE);
+
+
+    /* Clear TIM4 update flag */
+    //TIM4_ClearFlag(TIM4_FLAG_Update);
+    TIM4->SR1 = (uint8_t)(~((uint8_t)TIM4_FLAG_Update));
+
+  
+  
+    /* Enable update interrupt */
+    //TIM4_ITConfig(TIM4_IT_Update, ENABLE);
+    TIM4->IER |= (uint8_t)TIM4_IT_Update;
+    
+    /* enable interrupts */
+    enableInterrupts();
+
+    /* Enable TIM4 */
+    //TIM4_Cmd(ENABLE);
+    TIM4->CR1 |= TIM4_CR1_CEN ;
+
 }

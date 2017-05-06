@@ -25,6 +25,9 @@
       <name>$PROJ_DIR$\..\driver\ebox_pwm.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\driver\ebox_spi.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\driver\gpio.c</name>
     </file>
     <file>
@@ -32,6 +35,24 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\driver\usart.c</name>
+    </file>
+  </group>
+  <group>
+    <name>Lora</name>
+    <file>
+      <name>$PROJ_DIR$\..\Lora\radio.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Lora\sx1276-Hal.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Lora\sx1276-LoRa.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Lora\sx1276-LoRaMisc.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Lora\sx1276.c</name>
     </file>
   </group>
   <group>

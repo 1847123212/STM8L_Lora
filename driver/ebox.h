@@ -8,6 +8,7 @@
 #include "timer.h"
 #include "ebox_pwm.h"
 #include "gpio.h"
+#include "ebox_spi.h"
 
 
 #endif

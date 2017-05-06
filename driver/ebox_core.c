@@ -11,7 +11,6 @@ void ebox_reset()
 void ebox_init()
 {
   CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
-  tim4_config();//初始化1ms定时器
 }
 
 uint32_t millis()
