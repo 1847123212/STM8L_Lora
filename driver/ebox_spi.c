@@ -9,11 +9,10 @@ void spi_config()
     /* Set the MOSI,MISO and SCK at high level */
     GPIO_ExternalPullUpConfig(GPIOB, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7, ENABLE);    
 
-
     /* SPI configuration */
     SPI_Init(   SPI1, 
                 SPI_FirstBit_MSB, 
-                SPI_BaudRatePrescaler_4,
+                SPI_BaudRatePrescaler_2,
                 SPI_Mode_Master,
                 SPI_CPOL_High, 
                 SPI_CPHA_2Edge, 
@@ -25,4 +24,14 @@ void spi_config()
 
     /* Configure LORA_CS as Output push-pull, used as Flash Chip select */
     GPIO_Init(GPIOB, GPIO_Pin_4, GPIO_Mode_Out_PP_High_Slow);
+}
+
+uint8_t spi1_trans(uint8_t data)
+{
+    while ((SPI1->SR & SPI_FLAG_TXE) == RESET)
+        ;
+    SPI1->DR = data;
+    while ((SPI1->SR & SPI_FLAG_RXNE) == RESET)
+        ;
+    return SPI1->DR;
 }

@@ -21,10 +21,10 @@ uint32_t millis()
 void delay_ms(uint16_t ms)
 {
   uint32_t now = milli_second;
-  while(milli_second - now < ms);
+  while(milli_second - now < ms){nop();};
 }
 
 void delay_us(uint16_t us)
 {
-  while(us--);
+  while(us--){nop();};
 }

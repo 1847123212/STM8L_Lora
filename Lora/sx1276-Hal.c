@@ -123,12 +123,12 @@ void SX1276WriteBuffer( uint8_t addr, uint8_t *buffer, uint8_t size )
     //NSS = 0;
     //spi1.transfer( addr | 0x80 );
     NSS_PIN_RESET;
-    SPI_SendData(SPI1,addr | 0x80);
+    spi1_trans( addr | 0x80);
     for( i = 0; i < size; i++ )
     {
         //spi1.transfer( buffer[i] );
-          SPI_SendData(SPI1,buffer[i] );
-    }
+        spi1_trans( buffer[i]) ;
+   }
     //NSS = 1;
     NSS_PIN_SET;
 
@@ -140,10 +140,10 @@ void SX1276ReadBuffer( uint8_t addr, uint8_t *buffer, uint8_t size )
 
     //NSS = 0;
     NSS_PIN_RESET;
-    SPI_SendData(SPI1,addr | 0x7F);
+    spi1_trans(addr & 0x7F);
     for( i = 0; i < size; i++ )
     {
-        buffer[i] = SPI_ReceiveData( SPI1 );
+        buffer[i] = spi1_trans( 0xff );
     }
     //NSS = 1;
     NSS_PIN_SET;

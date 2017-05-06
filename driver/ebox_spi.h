@@ -3,6 +3,7 @@
 #include "ebox_core.h"
 
 void spi_config();
+uint8_t spi1_trans(uint8_t data);
 
 
 #endif
