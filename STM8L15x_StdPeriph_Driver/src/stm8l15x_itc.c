@@ -65,6 +65,7 @@ uint8_t ITC_GetCPUCC(void)
   asm("push cc");
   asm("pop a"); /* Ignore compiler warning, the returned value is in A register */
 #endif /* _COSMIC_*/
+  
 }
 
 /** @defgroup ITC_Group1 ITC configuration and management functions

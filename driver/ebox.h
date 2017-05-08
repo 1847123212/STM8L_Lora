@@ -2,6 +2,7 @@
 #define __EBOX_H
 
 #include "string.h"
+#include "stdio.h"
 
 #include "ebox_core.h"
 #include "usart.h"

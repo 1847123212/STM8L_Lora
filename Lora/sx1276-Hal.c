@@ -19,11 +19,9 @@
  * Last modified by Miguel Luis on Jun 19 2013
  */
 #include "ebox.h"
-#include "platform.h"
 #include "sx1276-Hal.h"
 
 
-#if defined( USE_SX1276_RADIO )
 
 
 
@@ -56,9 +54,9 @@
 
 void SX1276InitIo( void )
 {
+    // Configure RESET PIN as output    
+    GPIO_Init(GPIOA, GPIO_Pin_2, GPIO_Mode_Out_PP_Low_Slow);
     
-    // Configure NSS as output
-    //NSS_PIN.mode(OUTPUT_PP);
 
     
     // Configure DIO0
@@ -93,19 +91,38 @@ void SX1276SetReset( uint8_t state )
     if( state == RADIO_RESET_ON )
     {
         // Set RESET pin to 0
-        //RST_PIN.mode(OUTPUT_PP);
-        //RST_PIN.reset();
-        GPIO_Init(GPIOA, GPIO_Pin_2, GPIO_Mode_Out_PP_Low_Slow);
         GPIO_WriteBit(GPIOA,GPIO_Pin_2,RESET);
     }
     else
     {
         // Set RESET pin as input pull down
-        //RST_PIN.mode(INPUT_PD);     
-        GPIO_Init(GPIOA, GPIO_Pin_2, GPIO_Mode_In_FL_No_IT);
+   
+        GPIO_WriteBit(GPIOA,GPIO_Pin_2,SET);
     }
 }
+uint8_t setRegValue(uint8_t reg, uint8_t value, uint8_t msb, uint8_t lsb) 
+{
+    uint8_t currentValue;
+    uint8_t newValue;
+    if((msb > 7) || (lsb > 7)) {
+        return 0xFF;
+    }
+    SX1276Read(reg,&currentValue);
+    newValue = currentValue & ((0xff << (msb + 1)) | (0xff >> (8 - lsb)));
+    SX1276Write(reg, newValue | value);
+    return 0;
+}
 
+uint8_t getRegValue(uint8_t reg, uint8_t msb, uint8_t lsb) {
+    uint8_t rawValue;
+    uint8_t maskedValue;
+    if((msb > 7) || (lsb > 7)) {
+        return 0xFF;
+    }
+    SX1276Read(reg,&rawValue);
+    maskedValue = rawValue & ((0xff << lsb) & (0xff >> (7 - msb)));
+    return(maskedValue);
+}
 void SX1276Write( uint8_t addr, uint8_t data )
 {
     SX1276WriteBuffer( addr, &data, 1 );
@@ -188,7 +205,24 @@ inline uint8_t SX1276ReadDio5( void )
 {
     return DIO5_PIN_READ;
 }
-
+/////////////////////////////////////////////////////////////////////////////////
+#include "sx1278.h"
+void SX1278Reset()
+{
+    RST_PIN_RESET;
+    delay_ms(1);
+    RST_PIN_SET;
+    delay_ms(6);
+}
+void SX1278SetOpMode(uint8_t mode)
+{
+  setRegValue(SX1278_REG_OP_MODE, mode, 2, 0);
+}
+void SX1278ClearIRQFlags(void) 
+{
+  setRegValue(SX1278_REG_IRQ_FLAGS, B11111111,7,0);
+}
+/////////////////////////////////////////////////////////////////////////////////
 inline void SX1276WriteRxTx( uint8_t txEnable )
 {
     if( txEnable != 0 )

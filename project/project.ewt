@@ -31,6 +31,9 @@
       <name>$PROJ_DIR$\..\driver\gpio.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\driver\sx1278.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\driver\timer.c</name>
     </file>
     <file>
@@ -40,19 +43,7 @@
   <group>
     <name>Lora</name>
     <file>
-      <name>$PROJ_DIR$\..\Lora\radio.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\Lora\sx1276-Hal.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\Lora\sx1276-LoRa.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\Lora\sx1276-LoRaMisc.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\Lora\sx1276.c</name>
+      <name>$PROJ_DIR$\..\Lora\sx1278-Hal.c</name>
     </file>
   </group>
   <group>

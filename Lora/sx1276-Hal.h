@@ -160,6 +160,12 @@ inline uint8_t SX1276ReadDio5( void );
  * \param [IN] txEnable [1: Tx, 0: Rx]
  */
 inline void SX1276WriteRxTx( uint8_t txEnable );
+uint8_t setRegValue(uint8_t reg, uint8_t value, uint8_t msb, uint8_t lsb);
+uint8_t getRegValue(uint8_t reg, uint8_t msb, uint8_t lsb);
+
+void SX1278Reset();
+void SX1278SetOpMode(uint8_t mode);
+void SX1278ClearIRQFlags(void) ;
 
 #ifdef __cplusplus
 }

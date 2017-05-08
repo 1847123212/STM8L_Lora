@@ -1,10 +1,8 @@
 
 #include "ebox.h"
-#include "radio.h"
-#include "sx1276-lora.h"
-#include "sx1276-hal.h"
 #include "stdio.h"
-tRadioDriver *Radio;
+#include "sx1278.h"
+uint8_t buf[8]={'1','2','3','4','5','6','7','8'};
 
 uint8_t data;
 void main(void)
@@ -12,10 +10,6 @@ void main(void)
     ebox_init();
     tim4_config();//初始化1ms定时器
 
-    /*High speed internal clock prescaler: 1*/
-
-  
-    /* EVAL COM (USARTx) configuration -----------------------------------------*/
 
     usart_init( USART1, 
                 115200,
@@ -23,25 +17,41 @@ void main(void)
                 USART_StopBits_1,
                 USART_Parity_No,
                 (USART_Mode_TypeDef)(USART_Mode_Tx | USART_Mode_Rx));
-    
-    //pwm_config(1000,500);
-    Radio = RadioDriverInit( );
-    Radio->Init( );
-   // Radio->StartRx( );
-    
-    SX1276InitIo();
-    SX1276Reset( );
 
-  //      GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_Out_PP_Low_Fast);  
-
+    SX1278Init();
+    gpio_pb0_init();
+    //SX1278SetTxPacket(buf,8);
+        SX1278SetTxPacket(buf,8);
     while (1)
     {
-     // SX1276Write(REG_LR_FRFMSB,data);
-      SX1276Read(REG_LR_FRFMSB,&data);
+      //if(DIO0_PIN_READ != 0)
+      {
+      //      printf("dio0 = %d\n",DIO0_PIN_READ);
+      }
+      //SX1278Send(buf,8);
+      //data = getRegValue(SX1278_REG_FRF_MSB,7,0);
+     // GPIO_ToggleBits(GPIOB,GPIO_Pin_0);
+      //printf("0x%x\r\n",data);
+      //uart1_write("123\r\n",5);
+        //delay_ms(1000);
+switch( SX1278Process( ) )
+{
 
-      GPIO_ToggleBits(GPIOB,GPIO_Pin_0);
-    //  printf("0x%x\r\n",data);
-        delay_ms(100);
+    case RF_TX_TIMEOUT:
+        SX1278SetTxPacket(buf,8);
+        break;    
+      case RF_RX_TIMEOUT:
+       // SX1278SetTxPacket(buf,8);
+        break;
+    case RF_RX_DONE:
+        break;
+    case RF_TX_DONE:
+        SX1278SetTxPacket(buf,8);
+        //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
+        break;
+    default:
+        break;
+}
     }
 }
 

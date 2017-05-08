@@ -37,6 +37,8 @@ uint8_t SX1276Regs[0x70];
 static bool LoRaOn = false;
 static bool LoRaOnState = false;
 
+
+
 void SX1276Init( void )
 {
     // Initialize FSK and LoRa registers structure
@@ -58,15 +60,10 @@ void SX1276Reset( void )
     
     // Wait 1ms
     delay_ms(1);
-//    uint32_t startTick = GET_TICK_COUNT( );
-//    while( ( GET_TICK_COUNT( ) - startTick ) < TICK_RATE_MS( 1 ) );    
 
     SX1276SetReset( RADIO_RESET_OFF );
-    
     // Wait 6ms
     delay_ms(6);
-//    startTick = GET_TICK_COUNT( );
-//    while( ( GET_TICK_COUNT( ) - startTick ) < TICK_RATE_MS( 6 ) );    
 }
 
 void SX1276SetLoRaOn( bool enable )
@@ -78,8 +75,6 @@ void SX1276SetLoRaOn( bool enable )
     LoRaOnState = enable;
     LoRaOn = enable;
 
-    if( LoRaOn == true )
-    {
         SX1276LoRaSetOpMode( RFLR_OPMODE_SLEEP );
         
         SX1276LR->RegOpMode = ( SX1276LR->RegOpMode & RFLR_OPMODE_LONGRANGEMODE_MASK ) | RFLR_OPMODE_LONGRANGEMODE_ON;
@@ -93,18 +88,8 @@ void SX1276SetLoRaOn( bool enable )
         SX1276WriteBuffer( REG_LR_DIOMAPPING1, &SX1276LR->RegDioMapping1, 2 );
         
         SX1276ReadBuffer( REG_LR_OPMODE, SX1276Regs + 1, 0x70 - 1 );
-    }
-    else
-    {
-        SX1276LoRaSetOpMode( RFLR_OPMODE_SLEEP );
-        
-        SX1276LR->RegOpMode = ( SX1276LR->RegOpMode & RFLR_OPMODE_LONGRANGEMODE_MASK ) | RFLR_OPMODE_LONGRANGEMODE_OFF;
-        SX1276Write( REG_LR_OPMODE, SX1276LR->RegOpMode );
-        
-        SX1276LoRaSetOpMode( RFLR_OPMODE_STANDBY );
-        
-        SX1276ReadBuffer( REG_LR_OPMODE, SX1276Regs + 1, 0x70 - 1 );
-    }
+    
+
 }
 
 
