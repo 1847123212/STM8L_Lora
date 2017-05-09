@@ -1,11 +1,15 @@
 #include "sx1278.h"
 
 
-uint32_t LoRaLastDebugInfor = 0;
 
+#define XTAL_FREQ               26000000
+#define FREQ_STEP               49.59106
 
-
-#define RF_BUFFER_SIZE 256
+/*!
+ * Local RF buffer for communication support
+ */
+#define RF_BUFFER_SIZE          256
+static uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 
 static uint32_t LastTxTime = 0;
@@ -33,10 +37,6 @@ tLoRaSettings LoRaSettings =
     8,              // PayloadLength (used for implicit header mode)
     4,                  //preamble length(4-x)
 };
-/*!
- * Local RF buffer for communication support
- */
-static uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 /*!
  * RF state machine variable
@@ -88,9 +88,9 @@ void SX1278Init()
     */
     
     //5.设置载波频率
-    SX1278Write(SX1278_REG_FRF_MSB, SX1278_FRF_MSB);
-    SX1278Write(SX1278_REG_FRF_MID, SX1278_FRF_MID);
-    SX1278Write(SX1278_REG_FRF_LSB, SX1278_FRF_LSB);
+    SX1278SetRFFrequency(LoRaSettings.RFFrequency);
+    LORA_DBG("IRQ:%ld\n",SX1278GetRFFrequency());
+
   
     
 
@@ -125,16 +125,18 @@ void SX1278Init()
   
 
     
-    //9.LNA 增益设置001，最大增益
+    //LNA 接收增益设置001，最大增益
     SX1278Write(SX1278_REG_LNA, SX1278_LNA_GAIN_1 | SX1278_LNA_BOOST_HF_ON);
   
 
-    //6.输出功率设置    
-    SX1278Write(SX1278_REG_PA_CONFIG, SX1278_PA_SELECT_BOOST | SX1278_MAX_POWER |(LoRaSettings.Power - 5)&0x0f);
-  
+    //输出功率设置    
     SX1278WriteBits(SX1278_REG_PA_DAC, SX1278_PA_BOOST_ON, 2, 0);
+    SX1278WriteBits(SX1278_REG_PA_CONFIG, SX1278_PA_SELECT_BOOST, 7, 7);
+    SX1278SetRFPower(LoRaSettings.Power);
+    LORA_DBG("PACFG2:0x%02x\n",SX1278Read(SX1278_REG_PA_CONFIG));
+
   
-    //7.设置PA的过流保护（关闭），电流微调默认0x0b
+    //设置PA的过流保护（关闭），电流微调默认0x0b
     SX1278WriteBits(SX1278_REG_OCP, SX1278_OCP_OFF | SX1278_OCP_TRIM, 5, 0);
   
     temp16 = LoRaSettings.PreambleLength;
@@ -149,6 +151,95 @@ void SX1278Init()
     LORA_DBG("IRQ:0x%02x\n",SX1278Read(SX1278_REG_PREAMBLE_LSB));
 }
 
+
+void SX1278Reset()
+{
+    RST_PIN_RESET;
+    delay_ms(1);
+    RST_PIN_SET;
+    delay_ms(6);
+}
+void SX1278SetOpMode(uint8_t mode)
+{
+  SX1278WriteBits(SX1278_REG_OP_MODE, mode, 2, 0);
+}
+
+void SX1278ClearIRQFlags(uint8_t IrqFlagMask) 
+{
+  uint8_t NewFlags;
+  NewFlags =   SX1278Read(SX1278_REG_IRQ_FLAGS) | IrqFlagMask;
+  SX1278Write(SX1278_REG_IRQ_FLAGS,NewFlags);
+}
+void SX1278SetRFFrequency(uint32_t freq)
+{
+    LoRaSettings.RFFrequency = freq;
+    freq = ( uint32_t )( ( double )freq / ( double )FREQ_STEP );
+    SX1278Write(SX1278_REG_FRF_MSB, ( freq >> 16 ) & 0xFF );
+    SX1278Write(SX1278_REG_FRF_MID, ( freq >> 8 ) & 0xFF );
+    SX1278Write(SX1278_REG_FRF_LSB, freq & 0xFF);
+}
+uint32_t SX1278GetRFFrequency( void )
+{
+    uint8_t tempMSB,tempMID,tempLSB;
+    uint32_t tempFrq;
+    tempMSB = SX1278Read( SX1278_REG_FRF_MSB);
+    tempMID = SX1278Read( SX1278_REG_FRF_MID);
+    tempLSB = SX1278Read( SX1278_REG_FRF_LSB);
+    tempFrq = ( ( uint32_t )tempMSB << 16 ) | ( ( uint32_t )tempMID << 8 ) | ( ( uint32_t )tempLSB );
+    tempFrq = ( uint32_t )( ( double )tempFrq * ( double )FREQ_STEP );
+
+    return tempFrq;
+}
+void SX1278SetRFPower( int8_t power )
+{
+    uint8_t PaConfig = SX1278Read( SX1278_REG_PA_CONFIG );
+    ;
+    
+    if( ( PaConfig & SX1278_PA_SELECT_BOOST ) == SX1278_PA_SELECT_BOOST )
+    {
+        if( ( SX1278Read( SX1278_REG_PA_DAC ) & 0x87 ) == 0x87 )
+        {
+            if( power < 5 )
+            {
+                power = 5;
+            }
+            if( power > 20 )
+            {
+                power = 20;
+            }
+            PaConfig = ( PaConfig & SX1278_MAX_POWER | SX1278_PA_SELECT_BOOST ) | 0x70;
+            PaConfig = ( PaConfig & SX1278_MAX_POWER | SX1278_PA_SELECT_BOOST) | ( uint8_t )( ( uint16_t )( power - 5 ) & 0x0F );
+        }
+        else
+        {
+            if( power < 2 )
+            {
+                power = 2;
+            }
+            if( power > 17 )
+            {
+                power = 17;
+            }
+            PaConfig = ( PaConfig & SX1278_MAX_POWER | SX1278_PA_SELECT_BOOST) | 0x70;
+            PaConfig = ( PaConfig & SX1278_MAX_POWER | SX1278_PA_SELECT_BOOST) | ( uint8_t )( ( uint16_t )( power - 2 ) & 0x0F );
+        }
+    }
+    else
+    {
+        if( power < -1 )
+        {
+            power = -1;
+        }
+        if( power > 14 )
+        {
+            power = 14;
+        }
+        PaConfig = ( PaConfig & SX1278_MAX_POWER ) | 0x70;
+        PaConfig = ( PaConfig & SX1278_MAX_POWER ) | ( uint8_t )( ( uint16_t )( power + 1 ) & 0x0F );
+    }
+    SX1278Write( SX1278_REG_PA_CONFIG, PaConfig );
+    LoRaSettings.Power = power;
+}
 
 void SX1278TxMode() 
 {
@@ -264,6 +355,7 @@ uint8_t SX1278Process( void )
     switch( RFLRState )
     {
     case RFLR_STATE_IDLE:
+        SX1278SetOpMode( SX1278_SLEEP );
         break;
     case RFLR_STATE_RX_INIT:
         LORA_DBG("RX_INIT");

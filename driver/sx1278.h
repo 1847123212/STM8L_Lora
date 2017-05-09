@@ -56,6 +56,12 @@ typedef struct sLoRaSettings
 }tLoRaSettings;
 
 void SX1278Init();
+void SX1278Reset();
+void SX1278SetOpMode(uint8_t mode);
+void SX1278ClearIRQFlags(uint8_t IrqFlagMask);
+void SX1278SetRFFrequency(uint32_t freq);
+uint32_t SX1278GetRFFrequency( void );
+void SX1278SetRFPower( int8_t power );
 
 void SX1278TxMode() ;
 void SX1278Send(uint8_t* pBuffer,uint8_t len);

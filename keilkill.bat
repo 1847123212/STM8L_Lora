@@ -16,6 +16,7 @@ del *.crf /s
 del *.o /s
 del *.cout /s
 del *.pbi /s
+del *.out /s
 del *.d /s
 del *.axf /s
 del *.tra /s

@@ -1,6 +1,7 @@
 *.o
 *.cout
 *.pbi
+*.out
 *.crf
 *.d
 *.hex

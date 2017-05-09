@@ -236,7 +236,24 @@
 /*!
  * DIO state read functions mapping
  */
-   
+#define RST_PIN_RESET   (GPIOA->ODR &= B11111011)
+#define NSS_PIN_RESET   (GPIOB->ODR &= B11101111)
+#define DIO0_PIN_RESET  (GPIOA->ODR &= B11110111)
+#define DIO1_PIN_RESET  (GPIOB->ODR &= B11111101)
+#define DIO2_PIN_RESET  (GPIOB->ODR &= B11111011)
+#define DIO3_PIN_RESET  (GPIOB->ODR &= B11110111)
+#define DIO4_PIN_RESET  (GPIOC->ODR &= B11111110)
+#define DIO5_PIN_RESET  (GPIOC->ODR &= B11111101)
+
+#define RST_PIN_SET     (GPIOA->ODR |= GPIO_Pin_2)
+#define NSS_PIN_SET     (GPIOB->ODR |= GPIO_Pin_4)
+#define DIO0_PIN_SET    (GPIOA->ODR |= GPIO_Pin_3)
+#define DIO1_PIN_SET    (GPIOB->ODR |= GPIO_Pin_1)
+#define DIO2_PIN_SET    (GPIOB->ODR |= GPIO_Pin_2)
+#define DIO3_PIN_SET    (GPIOB->ODR |= GPIO_Pin_3)
+#define DIO4_PIN_SET    (GPIOC->ODR |= GPIO_Pin_0)
+#define DIO5_PIN_SET    (GPIOC->ODR |= GPIO_Pin_1)
+     
 #define DIO0_PIN_READ   ((GPIOA->IDR & GPIO_Pin_3)?1:0)
 #define DIO1_PIN_READ   ((GPIOB->IDR & GPIO_Pin_1)?1:0)
 #define DIO2_PIN_READ   ((GPIOB->IDR & GPIO_Pin_2)?1:0)
@@ -245,9 +262,6 @@
 #define DIO5_PIN_READ   ((GPIOC->IDR & GPIO_Pin_1)?1:0)
 
 void SX1278InitIo( void );
-void SX1278Reset();
-void SX1278SetOpMode(uint8_t mode);
-void SX1278ClearIRQFlags(uint8_t IrqFlagMask);
 
 uint8_t SX1278WriteBits(uint8_t reg, uint8_t value, uint8_t msb, uint8_t lsb);
 uint8_t SX1278ReadBits(uint8_t reg, uint8_t msb, uint8_t lsb);
@@ -255,10 +269,6 @@ uint8_t SX1278Write( uint8_t addr, uint8_t data );
 uint8_t SX1278Read( uint8_t addr );
 void SX1278WriteBuffer( uint8_t addr, uint8_t *buffer, uint8_t size );
 void SX1278ReadBuffer( uint8_t addr, uint8_t *buffer, uint8_t size );
-
-
- 
-
 
 
 
