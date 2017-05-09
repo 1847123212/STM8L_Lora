@@ -89,7 +89,7 @@ void SX1278Init()
     
     //5.设置载波频率
     SX1278SetRFFrequency(LoRaSettings.RFFrequency);
-    LORA_DBG("IRQ:%ld\n",SX1278GetRFFrequency());
+    //LORA_DBG("IRQ:%ld\n",SX1278GetRFFrequency());
 
   
     
@@ -131,9 +131,11 @@ void SX1278Init()
 
     //输出功率设置    
     SX1278WriteBits(SX1278_REG_PA_DAC, SX1278_PA_BOOST_ON, 2, 0);
+    //SX1278Write(SX1278_REG_PA_CONFIG, SX1278_PA_SELECT_BOOST | SX1278_MAX_POWER | (LoRaSettings.Power - 5)&0X0F);
+
     SX1278WriteBits(SX1278_REG_PA_CONFIG, SX1278_PA_SELECT_BOOST, 7, 7);
     SX1278SetRFPower(LoRaSettings.Power);
-    LORA_DBG("PACFG2:0x%02x\n",SX1278Read(SX1278_REG_PA_CONFIG));
+    //LORA_DBG("PACFG2:0x%02x\n",SX1278Read(SX1278_REG_PA_CONFIG));
 
   
     //设置PA的过流保护（关闭），电流微调默认0x0b
