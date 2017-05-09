@@ -14,8 +14,8 @@ void spi_config()
                 SPI_FirstBit_MSB, 
                 SPI_BaudRatePrescaler_2,
                 SPI_Mode_Master,
-                SPI_CPOL_High, 
-                SPI_CPHA_2Edge, 
+                SPI_CPOL_Low, 
+                SPI_CPHA_1Edge, 
                 SPI_Direction_2Lines_FullDuplex,
                 SPI_NSS_Soft, 
                 0x07);
@@ -26,7 +26,7 @@ void spi_config()
     GPIO_Init(GPIOB, GPIO_Pin_4, GPIO_Mode_Out_PP_High_Slow);
 }
 
-uint8_t spi1_trans(uint8_t data)
+uint8_t spi1_transfer(uint8_t data)
 {
     while ((SPI1->SR & SPI_FLAG_TXE) == RESET)
         ;

@@ -2,6 +2,8 @@
 #define __SX1278_H
 #include "ebox.h"
 #include "sx1278-hal.h"
+extern uint32_t TxPacketTime;
+extern uint32_t RxPacketTime;
 
 typedef enum
 {
@@ -47,20 +49,21 @@ typedef struct sLoRaSettings
     bool RxSingleOn;                    // [0: Continuous, 1 Single]
     bool FreqHopOn;                     // [0: OFF, 1: ON]
     uint8_t HopPeriod;                  // Hops every frequency hopping period symbols
-    uint32_t TxPacketTimeout;
-    uint32_t RxPacketTimeout;
-    uint8_t PayloadLength;
+    //uint32_t TxPacketTimeout;           //软件发送超时控制
+    uint32_t RxPacketTimeout;           //软件接收超时控制
+    uint8_t PayloadLength;              //用户数据长度：1-255
+    uint16_t PreambleLength;            //前导码长度4-1024
 }tLoRaSettings;
 
 void SX1278Init();
-void SX1278TxMode();
+
+void SX1278TxMode() ;
 void SX1278Send(uint8_t* pBuffer,uint8_t len);
 void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len);
 
-void SX1276LoRaSetRFState( uint8_t state );
-
-
-
+void SX1278RxMode(bool RxSingleOn);
+void SX1278GetRxPacket( void *buffer, uint16_t *size );
+void SX1278SetRFState( uint8_t state );
 uint8_t SX1278Process( void );
 
 #endif

@@ -33,7 +33,7 @@
 #define LORA_DEBUG 1
 
 #if LORA_DEBUG
-#define LORA_DBG(...) printf("[LoRa]:"),printf(__VA_ARGS__)
+#define LORA_DBG(...) printf("[LoRa-DBG]:"),printf(__VA_ARGS__),printf("\n")
 #else
     #define  LORA_DBG(...)
 #endif
@@ -217,6 +217,7 @@
 #define SX1278_CLEAR_IRQ_FLAG_CAD_DONE                B00000100  //  2     2     CAD complete
 #define SX1278_CLEAR_IRQ_FLAG_FHSS_CHANGE_CHANNEL     B00000010  //  1     1     FHSS change channel
 #define SX1278_CLEAR_IRQ_FLAG_CAD_DETECTED            B00000001  //  0     0     valid LoRa signal detected during CAD operation
+#define SX1278_CLEAR_IRQ_FLAG_ALL                     B00000001  //  0     0     valid LoRa signal detected during CAD operation
 //SX1278_REG_IRQ_FLAGS_MASK
 #define SX1278_MASK_IRQ_FLAG_RX_TIMEOUT               B01111111  //  7     7     timeout
 #define SX1278_MASK_IRQ_FLAG_RX_DONE                  B10111111  //  6     6     packet reception complete
@@ -232,47 +233,30 @@
 #define SX1278_FIFO_RX_BASE_ADDR_MAX                  B00000000  //  7     0     allocate the entire FIFO buffer for RX only
 
    
- /*!
- * RegIrqFlags
- */
-#define SX1278_IRQFLAGS_RXTIMEOUT                     0x80 
-#define SX1278_IRQFLAGS_RXDONE                        0x40 
-#define SX1278_IRQFLAGS_PAYLOADCRCERROR               0x20 
-#define SX1278_IRQFLAGS_VALIDHEADER                   0x10 
-#define SX1278_IRQFLAGS_TXDONE                        0x08 
-#define SX1278_IRQFLAGS_CADDONE                       0x04 
-#define SX1278_IRQFLAGS_FHSSCHANGEDCHANNEL            0x02 
-#define SX1278_IRQFLAGS_CADDETECTED                   0x01 
-   
 /*!
  * DIO state read functions mapping
  */
    
-#define DIO0_PIN_READ   (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_3)?1:0)
-#define DIO1_PIN_READ   (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1)?1:0)
-#define DIO2_PIN_READ   (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_2)?1:0)
-#define DIO3_PIN_READ   (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_3)?1:0)
-#define DIO4_PIN_READ   (GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_0)?1:0)
-#define DIO5_PIN_READ   (GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_1)?1:0)
+#define DIO0_PIN_READ   ((GPIOA->IDR & GPIO_Pin_3)?1:0)
+#define DIO1_PIN_READ   ((GPIOB->IDR & GPIO_Pin_1)?1:0)
+#define DIO2_PIN_READ   ((GPIOB->IDR & GPIO_Pin_2)?1:0)
+#define DIO3_PIN_READ   ((GPIOB->IDR & GPIO_Pin_3)?1:0)
+#define DIO4_PIN_READ   ((GPIOC->IDR & GPIO_Pin_0)?1:0)
+#define DIO5_PIN_READ   ((GPIOC->IDR & GPIO_Pin_1)?1:0)
 
 void SX1278InitIo( void );
 void SX1278Reset();
 void SX1278SetOpMode(uint8_t mode);
-//void SX1278ClearIRQFlags(uint8_t IrqFlagMask);
-void clearIRQFlags(void) ;
-uint8_t setRegValue(uint8_t reg, uint8_t value, uint8_t msb, uint8_t lsb);
-uint8_t getRegValue(uint8_t reg, uint8_t msb, uint8_t lsb);
-uint8_t readRegister(uint8_t reg);
-void SX1278Write( uint8_t addr, uint8_t data );
-void SX1278Read( uint8_t addr, uint8_t *data );
+void SX1278ClearIRQFlags(uint8_t IrqFlagMask);
+
+uint8_t SX1278WriteBits(uint8_t reg, uint8_t value, uint8_t msb, uint8_t lsb);
+uint8_t SX1278ReadBits(uint8_t reg, uint8_t msb, uint8_t lsb);
+uint8_t SX1278Write( uint8_t addr, uint8_t data );
+uint8_t SX1278Read( uint8_t addr );
 void SX1278WriteBuffer( uint8_t addr, uint8_t *buffer, uint8_t size );
 void SX1278ReadBuffer( uint8_t addr, uint8_t *buffer, uint8_t size );
-uint8_t SX1278ReadDio0( void );
-uint8_t SX1278ReadDio1( void );
-uint8_t SX1278ReadDio2( void );
-uint8_t SX1278ReadDio3( void );
-uint8_t SX1278ReadDio4( void );
-uint8_t SX1278ReadDio5( void );
+
+
  
 
 
