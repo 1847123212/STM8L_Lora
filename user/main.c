@@ -5,6 +5,8 @@
 uint8_t buf[8]={'1','2','3','4','5','6','7','8'};
 
 uint8_t data;
+uint32_t last;
+uint16_t xx;
 void main(void)
 {
     ebox_init();
@@ -38,6 +40,8 @@ switch( SX1278Process( ) )
 {
 
     case RF_TX_TIMEOUT:
+        gpio_pb0_toggle();
+      printf("TX TIMEOUT\n");
         SX1278SetTxPacket(buf,8);
         break;    
       case RF_RX_TIMEOUT:
@@ -46,7 +50,10 @@ switch( SX1278Process( ) )
     case RF_RX_DONE:
         break;
     case RF_TX_DONE:
+xx = millis() - last;
+        printf("time:%d\n",xx);
         SX1278SetTxPacket(buf,8);
+        last = millis();
         //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
         break;
     default:

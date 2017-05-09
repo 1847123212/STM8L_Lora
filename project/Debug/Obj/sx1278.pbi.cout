@@ -1,26 +1,26 @@
-"C:\Users\shentq\Documents\新建文件夹\driver\sx1278.c"
+"C:\Users\shentq\Documents\STM8_Lora\driver\sx1278.c"
 -std=c99
 -ferror-limit=100
 -I
-C:\Users\shentq\Documents\新建文件夹\project\..\STM8L15x_StdPeriph_Driver\inc
+C:\Users\shentq\Documents\STM8_Lora\project\..\STM8L15x_StdPeriph_Driver\inc
 -I
-C:\Users\shentq\Documents\新建文件夹\project\..\user
+C:\Users\shentq\Documents\STM8_Lora\project\..\user
 -I
-C:\Users\shentq\Documents\新建文件夹\project\..\driver
+C:\Users\shentq\Documents\STM8_Lora\project\..\driver
 -I
-C:\Users\shentq\Documents\新建文件夹\project\..\Lora
+C:\Users\shentq\Documents\STM8_Lora\project\..\Lora
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\stm8\inc
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\stm8\inc\c
 -I
-C:\Users\shentq\Documents\新建文件夹\STM8L15x_StdPeriph_Driver\inc
+C:\Users\shentq\Documents\STM8_Lora\STM8L15x_StdPeriph_Driver\inc
 -I
-C:\Users\shentq\Documents\新建文件夹\user
+C:\Users\shentq\Documents\STM8_Lora\user
 -I
-C:\Users\shentq\Documents\新建文件夹\driver
+C:\Users\shentq\Documents\STM8_Lora\driver
 -I
-C:\Users\shentq\Documents\新建文件夹\Lora
+C:\Users\shentq\Documents\STM8_Lora\Lora
 -DSTM8L05X_LD_VL=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
@@ -230,8 +230,8 @@ C:\Users\shentq\Documents\新建文件夹\Lora
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=594189
 -D_GOANNA=1
--D__DATE__="May  8 2017"
--D__TIME__="20:28:51"
+-D__DATE__="May  9 2017"
+-D__TIME__="18:27:43"
 -D__STDC__=1
 -D__STDC_VERSION__=199901L
 -D__STDC_HOSTED__=1

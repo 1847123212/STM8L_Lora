@@ -88,10 +88,10 @@ void SX1278SetOpMode(uint8_t mode)
 {
   setRegValue(SX1278_REG_OP_MODE, mode, 2, 0);
 }
-//void SX1278ClearIRQFlags(void) 
-//{
-//  setRegValue(SX1278_REG_IRQ_FLAGS, B11111111,7,0);
-//}
+void clearIRQFlags(void) 
+{
+setRegValue(SX1278_REG_IRQ_FLAGS, B11111111,7,0);
+}
 void SX1278ClearIRQFlags(uint8_t IrqFlagMask) 
 {
   uint8_t NewFlags;
@@ -108,6 +108,7 @@ uint8_t setRegValue(uint8_t reg, uint8_t value, uint8_t msb, uint8_t lsb)
     SX1278Read(reg,&currentValue);
     newValue = currentValue & ((0xff << (msb + 1)) | (0xff >> (8 - lsb)));
     SX1278Write(reg, newValue | value);
+    LORA_DBG("reg%d:0x%x\n",reg,readRegister(reg));
     return 0;
 }
 
@@ -120,6 +121,12 @@ uint8_t getRegValue(uint8_t reg, uint8_t msb, uint8_t lsb) {
     SX1278Read(reg,&rawValue);
     maskedValue = rawValue & ((0xff << lsb) & (0xff >> (7 - msb)));
     return(maskedValue);
+}
+uint8_t readRegister(uint8_t reg)
+{
+    uint8_t val;
+    SX1278Read(reg,&val);
+    return val;
 }
 void SX1278Write( uint8_t addr, uint8_t data )
 {

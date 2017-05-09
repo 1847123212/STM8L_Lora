@@ -28,6 +28,16 @@
 #include "ebox_core.h"
 #include "binary.h"
 
+   
+   
+#define LORA_DEBUG 1
+
+#if LORA_DEBUG
+#define LORA_DBG(...) printf("[LoRa]:"),printf(__VA_ARGS__)
+#else
+    #define  LORA_DBG(...)
+#endif
+   
 //SX1278 register map
 #define SX1278_REG_FIFO                               0x00
 #define SX1278_REG_OP_MODE                            0x01
@@ -106,7 +116,7 @@
 #define SX1278_CAD                                    B00000111  //  2     0     channel activity detection
 //SX1278_REG_FRF_MSB + REG_FRF_MID + REG_FRF_LSB
 #define SX1278_FRF_MSB                                0x85        //  7     0     carrier frequency setting: f_RF = (F(XOSC) * FRF)/2^19
-#define SX1278_FRF_MID                                0x89        //  7     0         where F(XOSC) = 26 MHz
+#define SX1278_FRF_MID                                0x89        //  7     0         where F(XOSC) = 32 MHz
 #define SX1278_FRF_LSB                                0xd9        //  7     0               FRF = 3 byte value of FRF registers
 //SX1278_REG_PA_CONFIG
 #define SX1278_PA_SELECT_RFO                          B00000000  //  7     7     RFO pin output, power limited to +14 dBm
@@ -217,10 +227,12 @@
 #define SX1278_MASK_IRQ_FLAG_FHSS_CHANGE_CHANNEL      B11111101  //  1     1     FHSS change channel
 #define SX1278_MASK_IRQ_FLAG_CAD_DETECTED             B11111110  //  0     0     valid LoRa signal detected during CAD operation
 //SX1278_REG_FIFO_TX_BASE_ADDR
-#define SX1278_FIFO_TX_BASE_ADDR                  B00000000  //  7     0     allocate the entire FIFO buffer for TX only
+#define SX1278_FIFO_TX_BASE_ADDR_MAX                  B00000000  //  7     0     allocate the entire FIFO buffer for TX only
 //SX1278_REG_FIFO_RX_BASE_ADDR
-#define SX1278_FIFO_RX_BASE_ADDR                  B00000000  //  7     0     allocate the entire FIFO buffer for RX only
-/*!
+#define SX1278_FIFO_RX_BASE_ADDR_MAX                  B00000000  //  7     0     allocate the entire FIFO buffer for RX only
+
+   
+ /*!
  * RegIrqFlags
  */
 #define SX1278_IRQFLAGS_RXTIMEOUT                     0x80 
@@ -246,9 +258,11 @@
 void SX1278InitIo( void );
 void SX1278Reset();
 void SX1278SetOpMode(uint8_t mode);
-void SX1278ClearIRQFlags(uint8_t IrqFlagMask);
+//void SX1278ClearIRQFlags(uint8_t IrqFlagMask);
+void clearIRQFlags(void) ;
 uint8_t setRegValue(uint8_t reg, uint8_t value, uint8_t msb, uint8_t lsb);
 uint8_t getRegValue(uint8_t reg, uint8_t msb, uint8_t lsb);
+uint8_t readRegister(uint8_t reg);
 void SX1278Write( uint8_t addr, uint8_t data );
 void SX1278Read( uint8_t addr, uint8_t *data );
 void SX1278WriteBuffer( uint8_t addr, uint8_t *buffer, uint8_t size );
