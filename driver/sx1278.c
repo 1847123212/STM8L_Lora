@@ -8,32 +8,29 @@
 /*!
  * Local RF buffer for communication support
  */
-#define RF_BUFFER_SIZE          256
+#define RF_BUFFER_SIZE          128
 static uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 
-static uint32_t LastTxTime = 0;
-static uint32_t LastRxTime = 0;
-uint32_t TxPacketTime = 0;
-uint32_t RxPacketTime = 0;
+uint32_t RxTxPacketTime = 0;
 
 
 // Default settings
 tLoRaSettings LoRaSettings =
 {
-    434000000,        // RFFrequency
-    20,               // Power
+    430000000,        // RFFrequency
+    15,               // Power
     6,                // SignalBw [0: 7.8kHz, 1: 10.4 kHz, 2: 15.6 kHz, 3: 20.8 kHz, 4: 31.2 kHz,
                       // 5: 41.6 kHz, 6: 62.5 kHz, 7: 125 kHz, 8: 250 kHz, 9: 500 kHz, other: Reserved]
     10,                // SpreadingFactor [6: 64, 7: 128, 8: 256, 9: 512, 10: 1024, 11: 2048, 12: 4096  chips]
     1,                // ErrorCoding [1: 4/5, 2: 4/6, 3: 4/7, 4: 4/8]
     TRUE,             // CrcOn [0: OFF, 1: ON]
     TRUE,            // ImplicitHeaderOn [0: OFF, 1: ON]
-    TRUE,                // RxSingleOn [0: Continuous, 1 Single]
+    FALSE,                // RxSingleOn [0: Continuous, 1 Single]
     FALSE,                // FreqHopOn [0: OFF, 1: ON]
     4,                // HopPeriod Hops every frequency hopping period symbols
     //100,              // TxPacketTimeout
-    1500,              // RxPacketTimeout
+    3000,              // RxPacketTimeout
     8,              // PayloadLength (used for implicit header mode)
     4,                  //preamble length(4-x)
 };
@@ -45,8 +42,8 @@ uint8_t RFLRState = RFLR_STATE_IDLE;
 /*!
  * Rx management support variables
  */
-static uint16_t RxPacketSize = 0;
-static int8_t RxPacketSnrEstimate;
+static uint8_t RxPacketSize = 0;
+//static int8_t RxPacketSnrEstimate;
 //static double RxPacketRssiValue;
 //static uint8_t RxGain = 1;
 //static uint32_t RxTimeoutTimer = 0;
@@ -55,7 +52,7 @@ static int8_t RxPacketSnrEstimate;
  */
 
 
-static uint16_t TxPacketSize = 0;
+static uint8_t TxPacketSize = 0;
 //1,复位引脚复位
 //2.进入sleepmode
 //3.启动外部晶振
@@ -96,20 +93,23 @@ void SX1278Init()
 
     temp = (LoRaSettings.SignalBw<<4) | (LoRaSettings.ErrorCoding<<1) | LoRaSettings.ImplicitHeaderOn;
     SX1278Write(SX1278_REG_MODEM_CONFIG_1,temp);
-    //如果采用隐式报头，则只能发送或者接受特定的字节长度
-    //SX1278Write(SX1278_REG_PAYLOAD_LENGTH,LoRaSettings.PayloadLength);//set payload length
 
-    
+    if(LoRaSettings.ImplicitHeaderOn)
+    {
+        //如果采用隐式报头，则只能发送或者接受特定的字节长度
+        SX1278Write(SX1278_REG_PAYLOAD_LENGTH,LoRaSettings.PayloadLength);//set payload length
+
+    }
     if(LoRaSettings.SpreadingFactor == 6) {
         SX1278Write(SX1278_REG_PAYLOAD_LENGTH,LoRaSettings.PayloadLength );//set payload length
   
         SX1278WriteBits(SX1278_REG_MODEM_CONFIG_1, SX1278_HEADER_IMPL_MODE,0,0);//if sf=6,mast set SX1278_HEADER_IMPL_MODE
   
-        SX1278WriteBits(SX1278_REG_DETECT_OPTIMIZE, SX1278_DETECT_OPTIMIZE_SF_6, 2, 0);//有疑问
-        SX1278Write(SX1278_REG_DETECTION_THRESHOLD, SX1278_DETECTION_THRESHOLD_SF_6);
+       // SX1278WriteBits(SX1278_REG_DETECT_OPTIMIZE, SX1278_DETECT_OPTIMIZE_SF_6, 2, 0);//有疑问
+       // SX1278Write(SX1278_REG_DETECTION_THRESHOLD, SX1278_DETECTION_THRESHOLD_SF_6);
     } else {
-        SX1278WriteBits(SX1278_REG_DETECT_OPTIMIZE, SX1278_DETECT_OPTIMIZE_SF_7_12, 2, 0);
-       SX1278Write(SX1278_REG_DETECTION_THRESHOLD, SX1278_DETECTION_THRESHOLD_SF_7_12);
+      //  SX1278WriteBits(SX1278_REG_DETECT_OPTIMIZE, SX1278_DETECT_OPTIMIZE_SF_7_12, 2, 0);
+       // SX1278Write(SX1278_REG_DETECTION_THRESHOLD, SX1278_DETECTION_THRESHOLD_SF_7_12);
     }    
     //sf 
     //set tx single mode
@@ -195,7 +195,6 @@ uint32_t SX1278GetRFFrequency( void )
 void SX1278SetRFPower( int8_t power )
 {
     uint8_t PaConfig = SX1278Read( SX1278_REG_PA_CONFIG );
-    ;
     
     if( ( PaConfig & SX1278_PA_SELECT_BOOST ) == SX1278_PA_SELECT_BOOST )
     {
@@ -274,8 +273,10 @@ void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len)
 
 void SX1278RxMode(bool RxSingleOn)
 {
+  LORA_DBG("SX1278RxMode()");
     //set mode to standby
     SX1278SetOpMode(SX1278_STANDBY);
+    //SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_ALL);
     //enable RX_TIMEOUT,RX_DONE interrupte
     SX1278Write(SX1278_REG_IRQ_FLAGS_MASK, 
                 //SX1278_MASK_IRQ_FLAG_RX_TIMEOUT &
@@ -311,15 +312,11 @@ void SX1278RxMode(bool RxSingleOn)
     
     //clear RF_BUFFER
     memset( RFBuffer, 0, ( size_t )RF_BUFFER_SIZE );
+    LORA_DBG("SX1278RxMode()");
     
 
 
-    
-     //  SX1278ClearIRQFlags();
-    
-    //SX1278WriteBits(SX1278_REG_FIFO_RX_BASE_ADDR, SX1278_FIFO_RX_BASE_ADDR_MAX);
-//    SX1278WriteBits(SX1278_REG_FIFO_RX_BASE_ADDR, SX1278_FIFO_RX_BASE_ADDR_MAX);
-//    SX1278WriteBits(SX1278_REG_FIFO_ADDR_PTR, SX1278_FIFO_RX_BASE_ADDR_MAX);
+
 
     //if( LoRaSettings.FreqHopOn == TRUE )
     //{
@@ -340,11 +337,13 @@ void SX1278RxMode(bool RxSingleOn)
     //update enter rx mode time
 }
 
-void SX1278GetRxPacket( void *buffer, uint16_t *size )
+void SX1278GetRxPacket( void *buffer, uint8_t *size )
 {
+  LORA_DBG("SX1278GetRxPacket()");
     *size = RxPacketSize;
     RxPacketSize = 0;
     memcpy( ( void * )buffer, ( void * )RFBuffer, ( size_t )*size );
+  LORA_DBG("SX1278GetRxPacket()");
 }
 
 void SX1278SetRFState( uint8_t state )
@@ -353,6 +352,7 @@ void SX1278SetRFState( uint8_t state )
 }
 uint8_t SX1278Process( void )
 {
+    uint32_t LastRxTxTime = 0;
     uint8_t result = RF_BUSY;
     switch( RFLRState )
     {
@@ -363,14 +363,15 @@ uint8_t SX1278Process( void )
         LORA_DBG("RX_INIT");
         SX1278RxMode(LoRaSettings.RxSingleOn);
         RFLRState = RFLR_STATE_RX_RUNNING;
-        LastRxTime  = millis();
+        LastRxTxTime  = millis();
         break;
     case RFLR_STATE_RX_RUNNING:
         //LORA_DBG("RX_RUNNING");
 
         if( DIO0_PIN_READ == 1 ) // RxDone
         {
-          RxPacketTime = millis() - LastRxTime;
+            RxTxPacketTime = millis() - LastRxTxTime;
+            LORA_DBG("IRQ0:0x%02x",SX1278Read(SX1278_REG_IRQ_FLAGS));
             // Clear Irq
             SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_RX_DONE);
             RFLRState = RFLR_STATE_RX_DONE;
@@ -403,9 +404,9 @@ uint8_t SX1278Process( void )
 
         if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
         {
-            if( ( millis( ) - LastRxTime ) > LoRaSettings.RxPacketTimeout )
+            if( ( millis( ) - LastRxTxTime ) > LoRaSettings.RxPacketTimeout )
             {
-                RxPacketTime = millis() - LastRxTime;
+                RxTxPacketTime = millis() - LastRxTxTime;
                 RFLRState = RFLR_STATE_RX_TIMEOUT;
                 //LORA_DBG("RX TIME OUT(SOFT)\n");
 
@@ -414,18 +415,12 @@ uint8_t SX1278Process( void )
         break;
     case RFLR_STATE_RX_DONE:
         LORA_DBG("RX_DONE");
-        //
+        LastRxTxTime =  millis();
         if((SX1278Read(SX1278_REG_IRQ_FLAGS)&SX1278_CLEAR_IRQ_FLAG_PAYLOAD_CRC_ERROR) == SX1278_CLEAR_IRQ_FLAG_PAYLOAD_CRC_ERROR)
         {
-          //如果发生了CRC错误，清除RX DONE中断和CRC中断
-            SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_RX_DONE | SX1278_CLEAR_IRQ_FLAG_PAYLOAD_CRC_ERROR);
-
-
-        }
-        else
-        {
-          //如果没有CRC错误，清除RX DONE中断
-            SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_RX_DONE);
+           LORA_DBG("IRQ3:0x%02x",SX1278Read(SX1278_REG_IRQ_FLAGS));
+            //如果发生了CRC错误，清除RX DONE中断和CRC中断
+            LORA_DBG("IRQ4:0x%02x\n",SX1278Read(SX1278_REG_IRQ_FLAGS));
             if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
             {
                 RFLRState = RFLR_STATE_RX_INIT;
@@ -435,7 +430,15 @@ uint8_t SX1278Process( void )
                 RFLRState = RFLR_STATE_RX_RUNNING;
             }
             break;
+
         }
+        else
+        {
+          //如果没有CRC错误，清除RX DONE中断
+            SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_RX_DONE);
+
+        }
+        /*不使用此功能
         {
             uint8_t rxSnrEstimate;
             rxSnrEstimate = SX1278Read( SX1278_REG_PKT_SNR_VALUE );
@@ -451,6 +454,7 @@ uint8_t SX1278Process( void )
                 RxPacketSnrEstimate = ( rxSnrEstimate & 0xFF ) >> 2;
             }
         }
+        */
         
         if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
         {
@@ -503,18 +507,17 @@ uint8_t SX1278Process( void )
         SX1278TxMode();
         SX1278Send(RFBuffer,TxPacketSize);
         RFLRState = RFLR_STATE_TX_RUNNING;
-        LastTxTime = millis( );
+        LastRxTxTime = millis( );
         break;
     case RFLR_STATE_TX_RUNNING:
         //LORA_DBG("TX-RUNNING");
         if( DIO0_PIN_READ == 1 ) // TxDone
         {
-            TxPacketTime = millis() - LastTxTime;
+            RxTxPacketTime = millis() - LastRxTxTime;
             // Clear Irq
             SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_TX_DONE);
 
             RFLRState = RFLR_STATE_TX_DONE;   
-            //printf("dio0\n");
         }
         if( DIO2_PIN_READ == 1 ) // FHSS Changed Channel
         {
@@ -529,7 +532,7 @@ uint8_t SX1278Process( void )
         /*不使用发送超时
         if(millis() - LastTime > LoRaSettings.TxPacketTimeout)
         {
-            TxPacketTime = millis() - LastTime;
+            RxTxPacketTime = millis() - LastTime;
             RFLRState = RFLR_STATE_TX_TIMEOUT;
         }*/
         break;

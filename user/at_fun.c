@@ -47,3 +47,8 @@ void at_setup_cmd_pwm2(char *pPara)
     at_backOk;
     at_state = at_statIdle;
 }
+void at_exeCmdNull(char *pPara)
+{
+    at_backOk;
+    at_state = at_statIdle;
+}

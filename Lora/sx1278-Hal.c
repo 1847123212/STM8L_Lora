@@ -76,6 +76,7 @@ uint8_t SX1278ReadBits(uint8_t reg, uint8_t msb, uint8_t lsb) {
 uint8_t SX1278Write( uint8_t addr, uint8_t data )
 {
     SX1278WriteBuffer( addr, &data, 1 );
+   // LORA_DBG("REG0X%02X:0X%02X",addr,SX1278Read(addr));
     return data;
 }
 

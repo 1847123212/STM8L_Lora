@@ -2,10 +2,56 @@
 #include "ebox.h"
 #include "stdio.h"
 #include "sx1278.h"
+#include "at_cmd.h"
+#include "at_port.h"
 uint8_t buf[8]={'1','2','3','4','5','6','7','8'};
-
+uint8_t buffer[8];
+uint8_t bufferLength;
 extern uint8_t RFLRState;
+uint8_t masterOn = 0;
+void master()
+{
+    switch( SX1278Process( ) )
+    {
 
+    case RF_TX_DONE:
+        //RFLRState = RFLR_STATE_RX_INIT;
+      //delay_ms(500);
+        SX1278SetTxPacket(buf,8);
+        //printf("tx time:%ld\n",TxPacketTime);
+        //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
+        break;
+    default:
+        break;
+    }
+}
+void slave()
+{
+    switch( SX1278Process( ) )
+    {
+    case RF_RX_TIMEOUT:
+        //printf("rx time:%ld\n",RxPacketTime);
+        SX1278SetRFState(RFLR_STATE_RX_INIT);
+        gpio_pb0_toggle();
+        break;
+    case RF_RX_DONE:
+        SX1278GetRxPacket(buffer,&bufferLength);
+        //printf("--------:%s\n",buffer);
+        memset(buffer,0,8);
+        SX1278SetRFState(RFLR_STATE_RX_INIT);
+        //SX1278SetTxPacket(buf,8);
+        gpio_pb0_toggle();
+        break;
+    /*case RF_TX_DONE:
+        //RFLRState = RFLR_STATE_RX_INIT;
+        SX1278SetRFState(RFLR_STATE_RX_INIT);
+        printf("tx time:%ld\n",TxPacketTime);
+        //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
+        break;*/
+    default:
+        break;
+    }
+}
 void main(void)
 {
     ebox_init();
@@ -21,33 +67,33 @@ void main(void)
 
     SX1278Init();
     gpio_pb0_init();
+    gpio_pd0_init();
+    gpio_pc4_init();
+    gpio_pc4_write(1);
     //SX1278SetTxPacket(buf,8);
-        //SX1278SetTxPacket(buf,8);
-        SX1278SetRFState(RFLR_STATE_RX_INIT);
+        if(masterOn == 1)
+        {
+                SX1278SetTxPacket(buf,8);
+
+        }
+        else
+        {
+                SX1278SetRFState(RFLR_STATE_RX_INIT);
+        }
+          
     while (1)
     {
-        switch( SX1278Process( ) )
-        {
-        case RF_TX_TIMEOUT:
-            gpio_pb0_toggle();
-            printf("tx time:%ld\n",TxPacketTime);
-            SX1278SetTxPacket(buf,8);
-            break;    
-          case RF_RX_TIMEOUT:
-            printf("rx time:%ld\n",RxPacketTime);
-            SX1278SetTxPacket(buf,8);
-            break;
-        case RF_RX_DONE:
-            break;
-        case RF_TX_DONE:
-            //RFLRState = RFLR_STATE_RX_INIT;
-            SX1278SetRFState(RFLR_STATE_RX_INIT);
-            printf("tx time:%ld\n",TxPacketTime);
-            //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
-            break;
-        default:
-            break;
-        }
+      if(masterOn == 1)
+      {
+        master();
+      }
+      else
+      {
+        slave();
+      }
+      
+      at_process_loop();
+
     }
 }
 

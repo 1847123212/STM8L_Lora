@@ -30,7 +30,7 @@
 
    
    
-#define LORA_DEBUG 1
+#define LORA_DEBUG 0
 
 #if LORA_DEBUG
 #define LORA_DBG(...) printf("[LoRa-DBG]:"),printf(__VA_ARGS__),printf("\n")

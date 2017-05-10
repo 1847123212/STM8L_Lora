@@ -2,8 +2,7 @@
 #define __SX1278_H
 #include "ebox.h"
 #include "sx1278-hal.h"
-extern uint32_t TxPacketTime;
-extern uint32_t RxPacketTime;
+extern uint32_t RxTcPacketTime;
 
 typedef enum
 {
@@ -68,7 +67,7 @@ void SX1278Send(uint8_t* pBuffer,uint8_t len);
 void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len);
 
 void SX1278RxMode(bool RxSingleOn);
-void SX1278GetRxPacket( void *buffer, uint16_t *size );
+void SX1278GetRxPacket( void *buffer, uint8_t *size );
 void SX1278SetRFState( uint8_t state );
 uint8_t SX1278Process( void );
 

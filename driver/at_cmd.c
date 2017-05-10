@@ -3,14 +3,14 @@
 #include "string.h"
 
 #define at_cmdNum   32
-
 at_funcationType at_fun[at_cmdNum]={
   
-{"+RST",    4,      NULL,           NULL,             NULL,                 at_exe_cmd_rst  },
-{"+PB0",    4,      NULL,           NULL,             at_setup_cmd_pb0,     NULL            },
-{"+PD0",    4,      NULL,           NULL,             at_setup_cmd_pd0,     NULL            },
-{"+PWM1",   4,      NULL,           NULL,             at_setup_cmd_pwm1,    NULL            },
-{"+PWM2",   4,      NULL,           NULL,             at_setup_cmd_pwm1,    NULL            },
+{NULL,      0,      NULL,           NULL,           NULL,               at_exeCmdNull   },
+{"+RST",    4,      NULL,           NULL,           NULL,               at_exe_cmd_rst  },
+{"+PB0",    4,      NULL,           NULL,           at_setup_cmd_pb0,   NULL            },
+{"+PD0",    4,      NULL,           NULL,           at_setup_cmd_pd0,   NULL            },
+{"+PWM1",   4,      NULL,           NULL,           at_setup_cmd_pwm1,  NULL            },
+{"+PWM2",   4,      NULL,           NULL,           at_setup_cmd_pwm1,  NULL            },
 
 };
 /**

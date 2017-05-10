@@ -3,6 +3,8 @@
 
 #include "ebox.h"
 
+
+void at_exeCmdNull(char *pPara);
 void at_exe_cmd_rst();
 
 void at_setup_cmd_pd0(char *pPara);
