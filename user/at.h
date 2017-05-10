@@ -14,10 +14,7 @@ typedef struct
 {
     char *at_cmdName;
     int8_t at_cmdLen;
-    void (*at_testCmd)();
-    void (*at_queryCmd)();
-    void (*at_setupCmd)(char *pPara);
-    void (*at_exeCmd)();
+    void (*at_Cmd)(char *pPara);
 }at_funcationType;
 
 #endif

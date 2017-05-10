@@ -54,6 +54,15 @@ void uart1_write_string(uint8_t *buf)
         while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
     }
 }
+void uart1_write_cstring(const uint8_t *buf)
+{
+
+    while(*buf != '\0')
+    {
+        USART_SendData8(USART1, *buf++);
+        while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+    }
+}
 uint8_t uart1_read()
 {
     return USART1->DR;

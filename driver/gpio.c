@@ -39,6 +39,10 @@ void gpio_pb0_write(uint8_t GPIO_BitVal)
         GPIOB->ODR &= (uint8_t)(~GPIO_Pin_0);
     }
 }
+void gpio_pb0_read()
+{
+    GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_In_FL_IT);
+}
 void gpio_pb0_toggle()
 {
     GPIO_ToggleBits(GPIOB,GPIO_Pin_0);

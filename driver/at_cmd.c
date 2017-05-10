@@ -5,12 +5,13 @@
 #define at_cmdNum   32
 at_funcationType at_fun[at_cmdNum]={
   
-{NULL,      0,      NULL,           NULL,           NULL,               at_exeCmdNull   },
-{"+RST",    4,      NULL,           NULL,           NULL,               at_exe_cmd_rst  },
-{"+PB0",    4,      NULL,           NULL,           at_setup_cmd_pb0,   NULL            },
-{"+PD0",    4,      NULL,           NULL,           at_setup_cmd_pd0,   NULL            },
-{"+PWM1",   4,      NULL,           NULL,           at_setup_cmd_pwm1,  NULL            },
-{"+PWM2",   4,      NULL,           NULL,           at_setup_cmd_pwm1,  NULL            },
+{NULL,          0,  at_CmdNull,     },
+{"+RST",        4,  at_CmdReset,    },
+{"+SLEEP",      6,  at_CmdReset,    },
+{"+VERSION",    8,  at_CmdVersion,  },
+{"+PB0",        4,  at_CmdPB0,      },
+{"+PD0",        4,  at_CmdPD0,      },
+{"+PWM1",       4,  at_CmdPWM,      },
 
 };
 /**
@@ -54,7 +55,7 @@ static int8_t at_getCmdLen(uint8_t *pCmd)
 
   while(i--)
   {
-    if((*pCmd == '\r') || (*pCmd == '=') || (*pCmd == '?') || ((*pCmd >= '0')&&(*pCmd <= '9')))
+    if((*pCmd == '\r') || (*pCmd == '=') || (*pCmd == '?'))
     {
       return n;
     }
@@ -83,40 +84,42 @@ void at_cmdProcess(uint8_t *pAtRcvData)
   }
   if(cmdId != -1)
   {
+        pAtRcvData += at_fun[cmdId].at_cmdLen;
+        if(at_fun[cmdId].at_Cmd)
+        {
+            at_fun[cmdId].at_Cmd((char *)pAtRcvData);
+        }
+        else
+        {
+//        uart0_sendStr("no this fun\r\n"); //Relax, it's just a code.
+            at_backError;
+        }
+      /*
 //    os_printf("cmd id: %d\r\n", cmdId);
-    pAtRcvData += cmdLen;
+    pAtRcvData += at_fun[cmdId].at_cmdLen;
     if(*pAtRcvData == '\r')
     {
-      if(at_fun[cmdId].at_exeCmd)
+      if(at_fun[cmdId].at_setupCmd)
       {
-        at_fun[cmdId].at_exeCmd(cmdId);
+        at_fun[cmdId].at_setupCmd((char *)pAtRcvData);
       }
       else
       {
+//        uart0_sendStr("no this fun\r\n"); //Relax, it's just a code.
         at_backError;
       }
     }
     else if(*pAtRcvData == '?' && (pAtRcvData[1] == '\r'))
     {
-      if(at_fun[cmdId].at_queryCmd)
-      {
-        at_fun[cmdId].at_queryCmd(cmdId);
-      }
-      else
-      {
-        at_backError;
-      }
-    }
-    else if((*pAtRcvData == '=') && (pAtRcvData[1] == '?') && (pAtRcvData[2] == '\r'))
-    {
-      if(at_fun[cmdId].at_testCmd)
-      {
-        at_fun[cmdId].at_testCmd(cmdId);
-      }
-      else
-      {
-        at_backError;
-      }
+         if(at_fun[cmdId].at_setupCmd)
+          {
+            at_fun[cmdId].at_setupCmd((char *)pAtRcvData);
+          }
+          else
+          {
+    //        uart0_sendStr("no this fun\r\n"); //Relax, it's just a code.
+            at_backError;
+          }
     }
     else if((*pAtRcvData >= '0') && (*pAtRcvData <= '9') || (*pAtRcvData == '='))
     {
@@ -133,7 +136,7 @@ void at_cmdProcess(uint8_t *pAtRcvData)
     else
     {
       at_backError;
-    }
+    }*/
   }
   else 
   {

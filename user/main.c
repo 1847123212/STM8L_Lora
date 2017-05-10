@@ -9,6 +9,7 @@ uint8_t buffer[8];
 uint8_t bufferLength;
 extern uint8_t RFLRState;
 uint8_t masterOn = 0;
+const uint8_t info[]="MODULE:LoRa-King\nVendor:eBox&Widora\nVersion:V0.1\nWeb:www.widora.org\n";
 void master()
 {
     switch( SX1278Process( ) )
@@ -40,7 +41,7 @@ void slave()
         memset(buffer,0,8);
         SX1278SetRFState(RFLR_STATE_RX_INIT);
         //SX1278SetTxPacket(buf,8);
-        gpio_pb0_toggle();
+        //gpio_pb0_toggle();
         break;
     /*case RF_TX_DONE:
         //RFLRState = RFLR_STATE_RX_INIT;
@@ -64,7 +65,8 @@ void main(void)
                 USART_StopBits_1,
                 USART_Parity_No,
                 (USART_Mode_TypeDef)(USART_Mode_Tx | USART_Mode_Rx));
-
+    uart1_write_string("a");
+    uart1_write_cstring(info);
     SX1278Init();
     gpio_pb0_init();
     gpio_pd0_init();

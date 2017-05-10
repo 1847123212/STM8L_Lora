@@ -4,13 +4,13 @@
 #include "ebox.h"
 
 
-void at_exeCmdNull(char *pPara);
-void at_exe_cmd_rst();
+void at_CmdNull(char *pPara);
+void at_CmdReset(char *pPara);
+void at_CmdSleep(char *pPara);
+void at_CmdVersion(char *pPara);
 
-void at_setup_cmd_pd0(char *pPara);
-void at_setup_cmd_pb0(char *pPara);
-
-void at_setup_cmd_pwm1(char *pPara);
-void at_setup_cmd_pwm2(char *pPara);
+void at_CmdPD0(char *pPara);
+void at_CmdPB0(char *pPara);
+void at_CmdPWM(char *pPara);
 
 #endif

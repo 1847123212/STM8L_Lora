@@ -8,6 +8,7 @@ void    usart_init( USART_TypeDef* USARTx, uint32_t BaudRate, USART_WordLength_T
                     USART_Parity_TypeDef USART_Parity,  USART_Mode_TypeDef USART_Mode);
 void    uart1_write(uint8_t *buf,uint16_t len);
 void uart1_write_string(uint8_t *buf);
+void uart1_write_cstring(const uint8_t *buf);
 uint8_t uart1_read();
 
 #endif
