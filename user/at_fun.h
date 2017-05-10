@@ -12,5 +12,7 @@ void at_CmdVersion(char *pPara);
 void at_CmdPD0(char *pPara);
 void at_CmdPB0(char *pPara);
 void at_CmdPWM(char *pPara);
-
+void at_CmdConfig(char *pPara);
+void at_CmdRxMode(char *pPara);
+void at_CmdTxPacket(char *pPara);
 #endif

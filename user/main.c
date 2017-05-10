@@ -37,18 +37,20 @@ void slave()
         break;
     case RF_RX_DONE:
         SX1278GetRxPacket(buffer,&bufferLength);
-        //printf("--------:%s\n",buffer);
+        //uart1_write_string("+IPD");
+        uart1_write(buffer,bufferLength);
+        
         memset(buffer,0,8);
         SX1278SetRFState(RFLR_STATE_RX_INIT);
         //SX1278SetTxPacket(buf,8);
-        //gpio_pb0_toggle();
+        gpio_pb0_toggle();
         break;
-    /*case RF_TX_DONE:
+    case RF_TX_DONE:
         //RFLRState = RFLR_STATE_RX_INIT;
         SX1278SetRFState(RFLR_STATE_RX_INIT);
-        printf("tx time:%ld\n",TxPacketTime);
+        //uart1_write_string("TX done\n");
         //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
-        break;*/
+        break;
     default:
         break;
     }

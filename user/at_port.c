@@ -2,7 +2,7 @@
 #include "at_cmd.h"
 #include "at.h"
 #include "sx1278.h"
-#define at_cmdLenMax 32
+#define at_cmdLenMax 64
 #define at_dataLenMax 128
 
 at_stateType  at_state;

@@ -7,11 +7,14 @@ at_funcationType at_fun[at_cmdNum]={
   
 {NULL,          0,  at_CmdNull,     },
 {"+RST",        4,  at_CmdReset,    },
-{"+SLEEP",      6,  at_CmdReset,    },
+{"+SLEEP",      6,  at_CmdSleep,    },
+{"+RX",         3,  at_CmdRxMode,   },
+{"+TX",         3,  at_CmdTxPacket,   },
 {"+VERSION",    8,  at_CmdVersion,  },
 {"+PB0",        4,  at_CmdPB0,      },
 {"+PD0",        4,  at_CmdPD0,      },
 {"+PWM1",       4,  at_CmdPWM,      },
+{"+CFG",        4,  at_CmdConfig,   },
 
 };
 /**

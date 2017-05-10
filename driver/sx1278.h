@@ -53,6 +53,7 @@ typedef struct sLoRaSettings
     uint8_t PayloadLength;              //用户数据长度：1-255
     uint16_t PreambleLength;            //前导码长度4-1024
 }tLoRaSettings;
+extern tLoRaSettings LoRaSettings;
 
 void SX1278Init();
 void SX1278Reset();

@@ -32,7 +32,7 @@ tLoRaSettings LoRaSettings =
     //100,              // TxPacketTimeout
     3000,              // RxPacketTimeout
     8,              // PayloadLength (used for implicit header mode)
-    4,                  //preamble length(4-x)
+    4,                  //PreambleLength(4-x)
 };
 
 /*!
@@ -151,6 +151,7 @@ void SX1278Init()
   
     LORA_DBG("IRQ:0x%02x\n",SX1278Read(SX1278_REG_PREAMBLE_MSB));
     LORA_DBG("IRQ:0x%02x\n",SX1278Read(SX1278_REG_PREAMBLE_LSB));
+    
 }
 
 
