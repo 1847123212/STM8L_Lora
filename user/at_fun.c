@@ -5,6 +5,80 @@
 #include <stdlib.h>
 extern at_stateType  at_state;
 
+extern char* ultoa( unsigned long value, char *string, int radix )
+{
+  char tmp[33];
+  char *tp = tmp;
+  long i;
+  unsigned long v = value;
+  char *sp;
+
+  if ( string == NULL )
+  {
+    return 0;
+  }
+
+  if (radix > 36 || radix <= 1)
+  {
+    return 0;
+  }
+ 
+  while (v || tp == tmp)
+  {
+    i = v % radix;
+    v = v / radix;
+    if (i < 10)
+      *tp++ = i+'0';
+    else
+      *tp++ = i + 'a' - 10;
+  }
+
+  sp = string;
+
+ 
+  while (tp > tmp)
+    *sp++ = *--tp;
+  *sp = 0;
+
+  return string;
+}
+char C2D(
+    uint8_t c	/**< is a character('0'-'F') to convert to HEX */
+)
+{
+    if (c >= '0' && c <= '9')
+        return c - '0';
+    if (c >= 'a' && c <= 'f')
+        return 10 + c - 'a';
+    if (c >= 'A' && c <= 'F')
+        return 10 + c - 'A';
+
+    return (char)c;
+}
+
+uint32_t ATOI32(
+    char *str,	/**< is a pointer to convert */
+    int base 	/**< is a base value (must be in the range 2 - 16) */
+)
+{
+    uint32_t num = 0;
+    while (*str != 0)
+        num = num * base + C2D(*str++);
+    return num;
+}
+uint32_t getPara(char **pPara)
+{
+    char buf[10];
+    int i = 0;
+    if(**pPara == ',' || **pPara == '=' )(*pPara)++;//跳过前面非数字区域
+    while((**pPara >= '0' && **pPara <= '9') )
+    {
+        buf[i++] = **pPara;
+        (*pPara)++;
+    }
+    buf[i++] = '\0';
+    return  ATOI32((char *)buf,10);
+}
 void at_CmdReset(char *pPara)
 {
     at_backOk;
@@ -41,7 +115,43 @@ void at_CmdPD0(char *pPara)
     }
 
 }
+void at_CmdReg(char *pPara)
+{
+    static uint8_t rawValue;
+    uint8_t buf[6]={0};
+    static uint8_t reg;
+    if(*pPara++ == ':')
+    reg = getPara(&pPara);
 
+    if(*pPara == '=')
+    {
+        rawValue=getPara(&pPara);
+        SX1278Write(reg,rawValue);
+        at_backOk;
+        at_state = at_statIdle;
+    }
+    else if(*pPara++ == '?')
+    {
+        buf[0] = '(';
+        buf[1] = '0';
+        buf[2] = 'x';
+        buf[3] = '0';
+        buf[4] = '0';
+        buf[5] = ')';
+        rawValue = SX1278Read(reg);
+        ultoa(rawValue,&buf[3],16);
+        buf[5]=')';
+        uart1_write(buf,6);
+        at_backOk;
+        at_state = at_statIdle;
+    }
+    else
+    {
+        at_backError;
+        at_state = at_statIdle;
+    }
+    
+}
 void at_CmdPB0(char *pPara)
 {
     if(*pPara == '=')
@@ -104,37 +214,8 @@ bool CheckPara(char *pPara)
     else
         return FALSE;
 }
- char C2D(
-    uint8_t c	/**< is a character('0'-'F') to convert to HEX */
-)
-{
-    if (c >= '0' && c <= '9')
-        return c - '0';
 
-    return (char)c;
-}
-uint32_t ATOI32(
-    char *str	/**< is a pointer to convert */
-)
-{
-    uint32_t num = 0;
-    while (*str != 0)
-        num = num * 10 + C2D(*str++);
-    return num;
-}
-uint32_t getPara(char **pPara)
-{
-    char buf[10];
-    int i = 0;
-    if(**pPara == ',' || **pPara == '=' )(*pPara)++;//跳过前面非数字区域
-    while(**pPara >= '0' && **pPara <= '9')
-    {
-        buf[i++] = **pPara;
-        (*pPara)++;
-    }
-    buf[i++] = '\0';
-    return  ATOI32((char *)buf);
-}
+
 void at_CmdConfig(char *pPara)
 {
 
@@ -159,130 +240,16 @@ void at_CmdConfig(char *pPara)
         LoRaSettings.RxPacketTimeout = getPara(&pPara);
         LoRaSettings.PayloadLength = getPara(&pPara);
         LoRaSettings.PreambleLength = getPara(&pPara);
-
-        /*
-        i = 0;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.RFFrequency = ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.Power = ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.SignalBw = ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.SpreadingFactor = ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.ErrorCoding = ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.CrcOn = (bool)ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.ImplicitHeaderOn = (bool)ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.RxSingleOn = (bool)ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.FreqHopOn = (bool)ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.HopPeriod = ATOI32((char *)buf);        
-                
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.RxPacketTimeout = ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != ',')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.PayloadLength = ATOI32((char *)buf);
-        
-        i = 0;
-        count++;
-        while(pPara[count] != '\r')
-        {
-            buf[i++] = pPara[count++];
-        }
-        buf[i++] = '\0';
-        LoRaSettings.PreambleLength = ATOI32((char *)buf);
-        */
         SX1278Init();
-
-
         at_backOk;
         at_state = at_statIdle;
     }
+    else
+    {
+        at_backError;
+        at_state = at_statIdle;
+    }
+        
 }
 void at_CmdRxMode(char *pPara)
 {

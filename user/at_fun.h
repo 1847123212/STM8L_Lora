@@ -8,6 +8,7 @@ void at_CmdNull(char *pPara);
 void at_CmdReset(char *pPara);
 void at_CmdSleep(char *pPara);
 void at_CmdVersion(char *pPara);
+void at_CmdReg(char *pPara);
 
 void at_CmdPD0(char *pPara);
 void at_CmdPB0(char *pPara);

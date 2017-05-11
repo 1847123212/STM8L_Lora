@@ -8,8 +8,9 @@ at_funcationType at_fun[at_cmdNum]={
 {NULL,          0,  at_CmdNull,     },
 {"+RST",        4,  at_CmdReset,    },
 {"+SLEEP",      6,  at_CmdSleep,    },
+{"+REG",        4,  at_CmdReg,      },
 {"+RX",         3,  at_CmdRxMode,   },
-{"+TX",         3,  at_CmdTxPacket,   },
+{"+TX",         3,  at_CmdTxPacket, },
 {"+VERSION",    8,  at_CmdVersion,  },
 {"+PB0",        4,  at_CmdPB0,      },
 {"+PD0",        4,  at_CmdPD0,      },
@@ -58,7 +59,7 @@ static int8_t at_getCmdLen(uint8_t *pCmd)
 
   while(i--)
   {
-    if((*pCmd == '\r') || (*pCmd == '=') || (*pCmd == '?'))
+    if((*pCmd == '\r') || (*pCmd == '=') || (*pCmd == '?')|| (*pCmd == ':'))
     {
       return n;
     }
