@@ -104,26 +104,70 @@ bool CheckPara(char *pPara)
     else
         return FALSE;
 }
+ char C2D(
+    uint8_t c	/**< is a character('0'-'F') to convert to HEX */
+)
+{
+    if (c >= '0' && c <= '9')
+        return c - '0';
+
+    return (char)c;
+}
+uint32_t ATOI32(
+    char *str	/**< is a pointer to convert */
+)
+{
+    uint32_t num = 0;
+    while (*str != 0)
+        num = num * 10 + C2D(*str++);
+    return num;
+}
+uint32_t getPara(char **pPara)
+{
+    char buf[10];
+    int i = 0;
+    if(**pPara == ',' || **pPara == '=' )(*pPara)++;//跳过前面非数字区域
+    while(**pPara >= '0' && **pPara <= '9')
+    {
+        buf[i++] = **pPara;
+        (*pPara)++;
+    }
+    buf[i++] = '\0';
+    return  ATOI32((char *)buf);
+}
 void at_CmdConfig(char *pPara)
 {
-    uint8_t buf[20];
-    int i = 0;
-    uint8_t count = 0;
-    if(pPara[count++] == '=')
+
+    if(*pPara++ == '=')
     {
-        if(CheckPara(&pPara[count]) == FALSE) 
+        if(CheckPara(pPara) == FALSE) 
         {
             at_backError;
             at_state = at_statIdle;
             return ;
         }
+        LoRaSettings.RFFrequency = getPara(&pPara);
+        LoRaSettings.Power = getPara(&pPara);
+        LoRaSettings.SignalBw = getPara(&pPara);
+        LoRaSettings.SpreadingFactor = getPara(&pPara);
+        LoRaSettings.ErrorCoding = getPara(&pPara);
+        LoRaSettings.CrcOn = (bool)getPara(&pPara);
+        LoRaSettings.ImplicitHeaderOn = (bool)getPara(&pPara);
+        LoRaSettings.RxSingleOn = (bool)getPara(&pPara);
+        LoRaSettings.FreqHopOn = (bool)getPara(&pPara);
+        LoRaSettings.HopPeriod = getPara(&pPara);
+        LoRaSettings.RxPacketTimeout = getPara(&pPara);
+        LoRaSettings.PayloadLength = getPara(&pPara);
+        LoRaSettings.PreambleLength = getPara(&pPara);
+
+        /*
         i = 0;
         while(pPara[count] != ',')
         {
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.RFFrequency = atol((const char*)buf);
+        LoRaSettings.RFFrequency = ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -132,7 +176,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.Power = atoi((const char*)buf);
+        LoRaSettings.Power = ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -141,7 +185,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.SignalBw = atoi((const char*)buf);
+        LoRaSettings.SignalBw = ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -150,7 +194,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.SpreadingFactor = atoi((const char*)buf);
+        LoRaSettings.SpreadingFactor = ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -159,7 +203,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.ErrorCoding = atoi((const char*)buf);
+        LoRaSettings.ErrorCoding = ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -168,7 +212,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.CrcOn = (bool)atoi((const char*)buf);
+        LoRaSettings.CrcOn = (bool)ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -177,7 +221,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.ImplicitHeaderOn = (bool)atoi((const char*)buf);
+        LoRaSettings.ImplicitHeaderOn = (bool)ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -186,7 +230,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.RxSingleOn = (bool)atoi((const char*)buf);
+        LoRaSettings.RxSingleOn = (bool)ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -195,7 +239,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.FreqHopOn = (bool)atoi((const char*)buf);
+        LoRaSettings.FreqHopOn = (bool)ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -204,7 +248,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.HopPeriod = (bool)atoi((const char*)buf);        
+        LoRaSettings.HopPeriod = ATOI32((char *)buf);        
                 
         i = 0;
         count++;
@@ -213,7 +257,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.RxPacketTimeout = atoi((const char*)buf);
+        LoRaSettings.RxPacketTimeout = ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -222,7 +266,7 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.PayloadLength = atoi((const char*)buf);
+        LoRaSettings.PayloadLength = ATOI32((char *)buf);
         
         i = 0;
         count++;
@@ -231,8 +275,8 @@ void at_CmdConfig(char *pPara)
             buf[i++] = pPara[count++];
         }
         buf[i++] = '\0';
-        LoRaSettings.PreambleLength = atoi((const char*)buf);
-        
+        LoRaSettings.PreambleLength = ATOI32((char *)buf);
+        */
         SX1278Init();
 
 
