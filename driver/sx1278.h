@@ -71,5 +71,7 @@ void SX1278RxMode(bool RxSingleOn);
 void SX1278GetRxPacket( void *buffer, uint8_t *size );
 void SX1278SetRFState( uint8_t state );
 uint8_t SX1278Process( void );
+void SaveConfig();
+void LoadConfig();
 
 #endif

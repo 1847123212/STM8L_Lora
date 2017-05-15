@@ -16,6 +16,9 @@ at_funcationType at_fun[at_cmdNum]={
 {"+PD0",        4,  at_CmdPD0,      },
 {"+PWM1",       4,  at_CmdPWM,      },
 {"+CFG",        4,  at_CmdConfig,   },
+{"+SAVE",       5,  at_CmdSaveConfig,   },
+
+
 
 };
 /**

@@ -28,6 +28,9 @@
       <name>$PROJ_DIR$\..\driver\ebox_spi.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\driver\eeprom.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\driver\gpio.c</name>
     </file>
     <file>
@@ -146,6 +149,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\user\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\user\misc.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\user\stm8l15x_it.c</name>

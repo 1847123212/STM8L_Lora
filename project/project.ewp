@@ -147,7 +147,7 @@
         </option>
         <option>
           <name>IccOptLevel</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>IccOptStrategy</name>
@@ -156,12 +156,12 @@
         </option>
         <option>
           <name>IccOptLevelSlave</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>IccOptAllowList</name>
           <version>0</version>
-          <state>000000</state>
+          <state>100100</state>
         </option>
         <option>
           <name>IccGenerateDebugInfo</name>
@@ -1601,6 +1601,9 @@
       <name>$PROJ_DIR$\..\driver\ebox_spi.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\driver\eeprom.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\driver\gpio.c</name>
     </file>
     <file>
@@ -1719,6 +1722,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\user\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\user\misc.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\user\stm8l15x_it.c</name>

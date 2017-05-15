@@ -16,4 +16,7 @@ void at_CmdPWM(char *pPara);
 void at_CmdConfig(char *pPara);
 void at_CmdRxMode(char *pPara);
 void at_CmdTxPacket(char *pPara);
+
+void at_CmdSaveConfig(char *pPara);
+
 #endif

@@ -1,4 +1,5 @@
 #include "sx1278.h"
+#include "eeprom.h"
 
 
 
@@ -19,7 +20,7 @@ uint32_t RxTxPacketTime = 0;
 tLoRaSettings LoRaSettings =
 {
     430000000,        // RFFrequency
-    15,               // Power
+    20,               // Power
     6,                // SignalBw [0: 7.8kHz, 1: 10.4 kHz, 2: 15.6 kHz, 3: 20.8 kHz, 4: 31.2 kHz,
                       // 5: 41.6 kHz, 6: 62.5 kHz, 7: 125 kHz, 8: 250 kHz, 9: 500 kHz, other: Reserved]
     10,                // SpreadingFactor [6: 64, 7: 128, 8: 256, 9: 512, 10: 1024, 11: 2048, 12: 4096  chips]
@@ -53,6 +54,15 @@ static uint8_t RxPacketSize = 0;
 
 
 static uint8_t TxPacketSize = 0;
+void SaveConfig()
+{
+    EEPROM_Write(0,(uint8_t *)&LoRaSettings,sizeof(LoRaSettings));
+}
+void LoadConfig()
+{
+    EEPROM_Read(0,(uint8_t *)&LoRaSettings,sizeof(LoRaSettings));
+}
+
 //1,复位引脚复位
 //2.进入sleepmode
 //3.启动外部晶振
@@ -61,10 +71,11 @@ static uint8_t TxPacketSize = 0;
 //6.输出功率设置    
 void SX1278Init()
 {    
-  uint8_t temp;
-  uint16_t temp16;
+    uint8_t temp;
+    uint16_t temp16;
     SX1278InitIo( );
     SX1278Reset();
+    //LoadConfig();
   
     SX1278SetOpMode( SX1278_SLEEP );
   
