@@ -1,6 +1,6 @@
 #include "usart.h"
 
-void usart_init(USART_TypeDef* USARTx,
+void usart_init(USART_TypeDef* USARTx,//123
                 uint32_t BaudRate,
                 USART_WordLength_TypeDef
                 USART_WordLength,

@@ -7,9 +7,8 @@
 uint8_t buf[8]={'1','2','3','4','5','6','7','8'};
 uint8_t buffer[8];
 uint8_t bufferLength;
-extern uint8_t RFLRState;
 uint8_t masterOn = 0;
-const uint8_t info[]="MODULE:LoRa-King\nVendor:eBox&Widora\nVersion:V0.1\nWeb:www.widora.org\n";
+const uint8_t info[]="MODULE:XLoRa-01\nVendor:eBox&Widora\nVersion:V0.1\nWeb:www.widora.org\n";
 void master()
 {
     switch( SX1278Process( ) )
@@ -77,16 +76,14 @@ void main(void)
     pwm1_config(0,59999,3999);
     pwm2_config(0,39999,19999);
     //SX1278SetTxPacket(buf,8);
-        if(masterOn == 1)
-        {
-                SX1278SetTxPacket(buf,8);
-
-        }
-        else
-        {
-                SX1278SetRFState(RFLR_STATE_RX_INIT);
-        }
-          
+    if(masterOn == 1)
+    {
+        SX1278SetTxPacket(buf,8);
+    }
+    else
+    {
+        SX1278SetRFState(RFLR_STATE_RX_INIT);
+    }
     while (1)
     {
       if(masterOn == 1)

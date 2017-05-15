@@ -15,6 +15,7 @@ at_funcationType at_fun[at_cmdNum]={
 {"+TX",         3,  at_CmdTxPacket, },
 {"+VERSION",    8,  at_CmdVersion,  },
 {"+PB0",        4,  at_CmdPB0,      },
+{"+PC4",        4,  at_CmdPC4,      },
 {"+PD0",        4,  at_CmdPD0,      },
 {"+PWM1",       5,  at_CmdPWM1,      },
 {"+PWM2",       5,  at_CmdPWM2,      },

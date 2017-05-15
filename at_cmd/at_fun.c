@@ -19,17 +19,39 @@ uint32_t getPara(char **pPara)
     buf[i++] = '\0';
     return  ATOI32((char *)buf,10);
 }
-
-void at_CmdNull(char *pPara)
+bool CheckPara(char *pPara)
 {
-    at_backOk;
-    at_state = at_statIdle;
+    uint8_t dot=0,err = 0;
+    while(*pPara != '\r')
+    {
+        if(*pPara == ',' )
+        {
+            dot++;
+        }
+        else if(*pPara < '0' || *pPara > '9')
+        {
+            err = 1;
+        }
+        pPara++;
+          
+    }
+    if(dot == 12 && err == 0)
+        return TRUE;
+    else
+        return FALSE;
 }
+
 void at_CmdError()
 {
     at_backOk;
     at_state = at_statIdle;
 }
+void at_CmdNull(char *pPara)
+{
+    at_backOk;
+    at_state = at_statIdle;
+}
+
 void at_CmdReset(char *pPara)
 {
     at_backOk;
@@ -48,24 +70,7 @@ void at_CmdVersion(char *pPara)
     at_backOk;
     at_state = at_statIdle;
 }
-void at_CmdPD0(char *pPara)
-{
-    if(*pPara++ == '=')
-    {
-        if(*pPara == '0')
-            gpio_pd0_write(0);
-        else
-            gpio_pd0_write(1);
-        at_backOk;
-    }
-    else if(*pPara++ == '?')
-    {
-        at_backOk;
-    }
-    at_state = at_statIdle;
 
-
-}
 #if USE_REG
 void at_CmdReg(char *pPara)
 {
@@ -131,7 +136,55 @@ void at_CmdPB0(char *pPara)
     at_state = at_statIdle;
 
 }
-
+void at_CmdPC4(char *pPara)
+{
+    if(*pPara++ == '=')
+    {
+        if(*pPara == '0')
+            gpio_pc4_write(0);
+        else
+            gpio_pc4_write(1);
+        at_backOk;
+    }
+    else if(*pPara++ == '?')
+    {
+        pPara++;
+        GPIO_Init(GPIOC,GPIO_Pin_4,GPIO_Mode_In_FL_No_IT);
+        if(GPIOC->IDR & GPIO_Pin_4)
+        {
+            
+            uart1_write_string("1");
+        }
+        else
+            uart1_write_string("0");
+        at_backOk;
+    }
+    at_state = at_statIdle;
+}
+void at_CmdPD0(char *pPara)
+{
+    if(*pPara++ == '=')
+    {
+        if(*pPara == '0')
+            gpio_pd0_write(0);
+        else
+            gpio_pd0_write(1);
+        at_backOk;
+    }
+    else if(*pPara++ == '?')
+    {
+        pPara++;
+        GPIO_Init(GPIOD,GPIO_Pin_0,GPIO_Mode_In_FL_No_IT);
+        if(GPIOD->IDR & GPIO_Pin_0)
+        {
+            uart1_write_string("1");
+        }
+        else
+            uart1_write_string("0");
+        at_backOk;
+    }
+    at_state = at_statIdle;
+}
 
 void at_CmdPWM1(char *pPara)
 {
@@ -174,27 +227,7 @@ void at_CmdPWM2(char *pPara)
 }
 
 
-bool CheckPara(char *pPara)
-{
-    uint8_t dot=0,err = 0;
-    while(*pPara != '\r')
-    {
-        if(*pPara == ',' )
-        {
-            dot++;
-        }
-        else if(*pPara < '0' || *pPara > '9')
-        {
-            err = 1;
-        }
-        pPara++;
-          
-    }
-    if(dot == 12 && err == 0)
-        return TRUE;
-    else
-        return FALSE;
-}
+
 
 
 void at_CmdConfig(char *pPara)
@@ -231,6 +264,10 @@ void at_CmdConfig(char *pPara)
     }
     at_state = at_statIdle;
     
+}
+void at_CmdSetAddres(char *pPara)
+{
+
 }
 void at_CmdRxMode(char *pPara)
 {
