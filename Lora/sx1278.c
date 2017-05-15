@@ -19,7 +19,7 @@ uint32_t RxTxPacketTime = 0;
 // Default settings
 tLoRaSettings LoRaSettings =
 {
-    430000000,        // RFFrequency
+    433000000,        // RFFrequency
     20,               // Power
     6,                // SignalBw [0: 7.8kHz, 1: 10.4 kHz, 2: 15.6 kHz, 3: 20.8 kHz, 4: 31.2 kHz,
                       // 5: 41.6 kHz, 6: 62.5 kHz, 7: 125 kHz, 8: 250 kHz, 9: 500 kHz, other: Reserved]
@@ -561,9 +561,12 @@ uint8_t SX1278Process( void )
         result = RF_TX_TIMEOUT;
         break;
         */
+    /*≤ª π”√CAD*/
+
     case RFLR_STATE_CAD_INIT: 
         break;
     case RFLR_STATE_CAD_RUNNING:
+        
     default:
         break;
     }

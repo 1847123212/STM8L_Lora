@@ -20,7 +20,8 @@ void gpio_pd0_write(uint8_t GPIO_BitVal)
 }
 void gpio_pd0_toggle()
 {
-    GPIO_ToggleBits(GPIOD,GPIO_Pin_0);
+    GPIOD->ODR ^= GPIO_Pin_0;
+    //GPIO_ToggleBits(GPIOD,GPIO_Pin_0);
 }
 void gpio_pb0_init()
 {
@@ -45,7 +46,8 @@ void gpio_pb0_read()
 }
 void gpio_pb0_toggle()
 {
-    GPIO_ToggleBits(GPIOB,GPIO_Pin_0);
+    GPIOB->ODR ^= GPIO_Pin_0;
+    //GPIO_ToggleBits(GPIOB,GPIO_Pin_0);
 }
 
 void gpio_pc4_init()
@@ -59,7 +61,6 @@ void gpio_pc4_write(uint8_t GPIO_BitVal)
     if (GPIO_BitVal != RESET)
     {
         GPIOC->ODR |= GPIO_Pin_4;
-
     }
     else
     {
@@ -68,5 +69,7 @@ void gpio_pc4_write(uint8_t GPIO_BitVal)
 }
 void gpio_pc4_toggle()
 {
-    GPIO_ToggleBits(GPIOC,GPIO_Pin_4);
+    //GPIO_ToggleBits(GPIOC,GPIO_Pin_4);
+    GPIOC->ODR ^= GPIO_Pin_4;
+
 }

@@ -364,7 +364,8 @@ INTERRUPT_HANDLER(TIM4_UPD_OVF_TRG_IRQHandler, 25)
 
   milli_second++;
   /* Cleat Interrupt Pending bit */
-  TIM4_ClearITPendingBit(TIM4_IT_Update);
+  TIM4->SR1 = (uint8_t)(~(uint8_t)TIM4_IT_Update);
+
 }
 /**
   * @brief SPI1 Interrupt routine.

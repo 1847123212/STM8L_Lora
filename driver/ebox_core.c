@@ -10,7 +10,9 @@ void ebox_reset()
 
 void ebox_init()
 {
-  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
+  //CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
+    CLK->CKDIVR = (uint8_t)(CLK_SYSCLKDiv_1);
+
 }
 
 uint32_t millis()

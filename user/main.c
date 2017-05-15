@@ -74,6 +74,7 @@ void main(void)
     gpio_pd0_init();
     gpio_pc4_init();
     gpio_pc4_write(1);
+    pwm_config(100,100);
     //SX1278SetTxPacket(buf,8);
         if(masterOn == 1)
         {
