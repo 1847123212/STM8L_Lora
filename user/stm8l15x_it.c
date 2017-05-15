@@ -361,6 +361,7 @@ INTERRUPT_HANDLER(TIM4_UPD_OVF_TRG_IRQHandler, 25)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+   // GPIOD->ODR ^= GPIO_Pin_0;
 
   milli_second++;
   /* Cleat Interrupt Pending bit */

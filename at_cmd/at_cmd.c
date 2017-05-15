@@ -16,7 +16,8 @@ at_funcationType at_fun[at_cmdNum]={
 {"+VERSION",    8,  at_CmdVersion,  },
 {"+PB0",        4,  at_CmdPB0,      },
 {"+PD0",        4,  at_CmdPD0,      },
-{"+PWM1",       4,  at_CmdPWM,      },
+{"+PWM1",       5,  at_CmdPWM1,      },
+{"+PWM2",       5,  at_CmdPWM2,      },
 {"+CFG",        4,  at_CmdConfig,   },
 {"+SAVE",       5,  at_CmdSaveConfig,   },
 

@@ -57,13 +57,13 @@ void at_CmdPD0(char *pPara)
         else
             gpio_pd0_write(1);
         at_backOk;
-        at_state = at_statIdle;
     }
     else if(*pPara++ == '?')
     {
         at_backOk;
-        at_state = at_statIdle;
     }
+    at_state = at_statIdle;
+
 
 }
 #if USE_REG
@@ -80,7 +80,6 @@ void at_CmdReg(char *pPara)
         rawValue=getPara(&pPara);
         SX1278Write(reg,rawValue);
         at_backOk;
-        at_state = at_statIdle;
     }
     else if(*pPara++ == '?')
     {
@@ -95,13 +94,12 @@ void at_CmdReg(char *pPara)
         buf[5]=')';
         uart1_write(buf,6);
         at_backOk;
-        at_state = at_statIdle;
     }
     else
     {
         at_backError;
-        at_state = at_statIdle;
     }
+    at_state = at_statIdle;
     
 }
 #endif
@@ -115,7 +113,6 @@ void at_CmdPB0(char *pPara)
         else
             gpio_pb0_write(1);
         at_backOk;
-        at_state = at_statIdle;
     }
     else if(*pPara == '?')
     {
@@ -130,14 +127,49 @@ void at_CmdPB0(char *pPara)
             uart1_write_string("0");
 
         at_backOk;
-        at_state = at_statIdle;
     }
+    at_state = at_statIdle;
+
 }
 
-void at_CmdPWM(char *pPara)
+
+void at_CmdPWM1(char *pPara)
+{
+    uint8_t prescaler;
+    uint16_t period;
+    uint16_t pulse; 
+    if(*pPara++ == '=')
+    {
+        prescaler = getPara(&pPara);
+        period = getPara(&pPara);
+        pulse = getPara(&pPara);
+        pwm1_config(prescaler,period,pulse);
+        at_backOk;
+    }
+    else
+    {
+        at_backError;
+    }
+    at_state = at_statIdle;
+}
+void at_CmdPWM2(char *pPara)
 {
 
-    at_backOk;
+    uint8_t prescaler;
+    uint16_t period;
+    uint16_t pulse; 
+    if(*pPara++ == '=')
+    {
+        prescaler = getPara(&pPara);
+        period = getPara(&pPara);
+        pulse = getPara(&pPara);
+        pwm2_config(prescaler,period,pulse);
+        at_backOk;
+    }
+    else
+    {
+        at_backError;
+    }
     at_state = at_statIdle;
 }
 
@@ -192,14 +224,13 @@ void at_CmdConfig(char *pPara)
         SX1278Init();
         SX1278SetRFState(RFLR_STATE_RX_INIT);
         at_backOk;
-        at_state = at_statIdle;
     }
     else
     {
         at_backError;
-        at_state = at_statIdle;
     }
-        
+    at_state = at_statIdle;
+    
 }
 void at_CmdRxMode(char *pPara)
 {
