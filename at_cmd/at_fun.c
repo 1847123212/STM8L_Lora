@@ -19,6 +19,17 @@ uint32_t getPara(char **pPara)
     buf[i++] = '\0';
     return  ATOI32((char *)buf,10);
 }
+
+void at_CmdNull(char *pPara)
+{
+    at_backOk;
+    at_state = at_statIdle;
+}
+void at_CmdError()
+{
+    at_backOk;
+    at_state = at_statIdle;
+}
 void at_CmdReset(char *pPara)
 {
     at_backOk;
@@ -55,6 +66,7 @@ void at_CmdPD0(char *pPara)
     }
 
 }
+#if USE_REG
 void at_CmdReg(char *pPara)
 {
     static uint8_t rawValue;
@@ -92,6 +104,7 @@ void at_CmdReg(char *pPara)
     }
     
 }
+#endif
 void at_CmdPB0(char *pPara)
 {
     if(*pPara == '=')
@@ -128,11 +141,7 @@ void at_CmdPWM(char *pPara)
     at_state = at_statIdle;
 }
 
-void at_CmdNull(char *pPara)
-{
-    at_backOk;
-    at_state = at_statIdle;
-}
+
 bool CheckPara(char *pPara)
 {
     uint8_t dot=0,err = 0;

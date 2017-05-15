@@ -8,7 +8,9 @@ at_funcationType at_fun[at_cmdNum]={
 {NULL,          0,  at_CmdNull,     },
 {"+RST",        4,  at_CmdReset,    },
 {"+SLEEP",      6,  at_CmdSleep,    },
+#if USE_REG
 {"+REG",        4,  at_CmdReg,      },
+#endif
 {"+RX",         3,  at_CmdRxMode,   },
 {"+TX",         3,  at_CmdTxPacket, },
 {"+VERSION",    8,  at_CmdVersion,  },
@@ -147,6 +149,7 @@ void at_cmdProcess(uint8_t *pAtRcvData)
   }
   else 
   {
+    at_CmdError();
   	at_backError;
   }
 

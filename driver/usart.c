@@ -78,8 +78,8 @@ void uart1_write(uint8_t *buf,uint16_t len)
     while(len--)
     {
         //USART_SendData8(USART1, *buf++);
-          USART1->DR = *buf++;
-        while ((USART1->SR & (uint8_t)USART_FLAG_TC) != (uint8_t)0x00);
+        USART1->DR = *buf++;
+        while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
     }
 }
 void uart1_write_string(uint8_t *buf)
@@ -87,9 +87,8 @@ void uart1_write_string(uint8_t *buf)
 
     while(*buf != '\0')
     {
-                  USART1->DR = *buf++;
-//USART_SendData8(USART1, *buf++);
-        while ((USART1->SR & (uint8_t)USART_FLAG_TC) != (uint8_t)0x00);
+        USART1->DR = *buf++;
+        while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
     }
 }
 void uart1_write_cstring(const uint8_t *buf)
@@ -97,10 +96,8 @@ void uart1_write_cstring(const uint8_t *buf)
 
     while(*buf != '\0')
     {
-        //USART_SendData8(USART1, *buf++);
-        //while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
         USART1->DR = *buf++;
-        while ((USART1->SR & (uint8_t)USART_FLAG_TC) != (uint8_t)0x00);
+        while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
     }
 }
 uint8_t uart1_read()
@@ -117,11 +114,9 @@ uint8_t uart1_read()
 int putchar (int c)
 {
   /* Write a character to the USART */
-  //USART_SendData8(USART1, c);
-  /* Loop until the end of transmission */
-  //while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
     USART1->DR = c;
-    while ((USART1->SR & (uint8_t)USART_FLAG_TC) != (uint8_t)0x00);
+  /* Loop until the end of transmission */
+  while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
 
   return (c);
 }
@@ -136,9 +131,7 @@ int getchar (void)
 {
   int c = 0;
   /* Loop until the Read data register flag is SET */
-  //while (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == RESET);
-    while ((USART1->SR & (uint8_t)USART_FLAG_RXNE) != (uint8_t)0x00);
-    //c = USART_ReceiveData8(USART1);
+  while (USART_GetFlagStatus(USART1, USART_FLAG_RXNE) == RESET);
     c = USART1->DR;
     return (c);
   }

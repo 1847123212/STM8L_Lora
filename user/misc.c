@@ -1,6 +1,7 @@
 #include "misc.h"
 #include <stdlib.h>
 
+#if USE_REG
 extern char* ultoa( unsigned long value, char *string, int radix )
 {
   char tmp[33];
@@ -38,6 +39,8 @@ extern char* ultoa( unsigned long value, char *string, int radix )
 
   return string;
 }
+#endif
+
 char C2D(
     uint8_t c	/**< is a character('0'-'F') to convert to HEX */
 )
