@@ -261,6 +261,7 @@
           <state>$PROJ_DIR$\..\user</state>
           <state>$PROJ_DIR$\..\driver</state>
           <state>$PROJ_DIR$\..\Lora</state>
+          <state>$PROJ_DIR$\..\at_cmd</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1590,6 +1591,18 @@
     </settings>
   </configuration>
   <group>
+    <name>at</name>
+    <file>
+      <name>$PROJ_DIR$\..\at_cmd\at_cmd.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\at_cmd\at_fun.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\at_cmd\at_port.c</name>
+    </file>
+  </group>
+  <group>
     <name>driver</name>
     <file>
       <name>$PROJ_DIR$\..\driver\ebox_core.c</name>
@@ -1607,9 +1620,6 @@
       <name>$PROJ_DIR$\..\driver\gpio.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\driver\sx1278.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\driver\timer.c</name>
     </file>
     <file>
@@ -1620,6 +1630,9 @@
     <name>Lora</name>
     <file>
       <name>$PROJ_DIR$\..\Lora\sx1278-Hal.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Lora\sx1278.c</name>
     </file>
   </group>
   <group>
@@ -1711,15 +1724,6 @@
   </group>
   <group>
     <name>User</name>
-    <file>
-      <name>$PROJ_DIR$\..\driver\at_cmd.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\user\at_fun.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\user\at_port.c</name>
-    </file>
     <file>
       <name>$PROJ_DIR$\..\user\main.c</name>
     </file>
