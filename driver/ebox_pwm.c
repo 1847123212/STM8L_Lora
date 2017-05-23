@@ -16,8 +16,8 @@ void pwm1_config(uint8_t prescaler,uint16_t period,uint16_t pulse)
     // TIM2_OC1Init(TIM2_OCMode_PWM1, TIM2_OutputState_Enable, pulse, TIM2_OCPolarity_Low, TIM2_OCIdleState_Set);
     TIM2->CCMR1 |= (uint8_t)TIM2_OCMode_PWM1;
 
-    TIM2->CCER1 |= TIM_CCER1_CC1E;//输出使能
-    TIM2->CCER1 |= TIM_CCER1_CC1P;//极性控制
+    //TIM2->CCER1 |= TIM_CCER1_CC1E;//输出使能
+    TIM2->CCER1 |= TIM_CCER1_CC1P | TIM_CCER1_CC1E;//极性控制
     TIM2->OISR |= TIM_OISR_OIS1;//空闲输出
     /* Set the Pulse value */
     TIM2->CCR1H = (uint8_t)(pulse >> 8);
@@ -39,8 +39,8 @@ void pwm2_config(uint8_t prescaler,uint16_t period,uint16_t pulse)
     
     TIM3->CCMR2 |= (uint8_t)TIM2_OCMode_PWM1;
 
-    TIM3->CCER1 |= TIM_CCER1_CC2E;//输出使能
-    TIM3->CCER1 |= TIM_CCER1_CC2P;//极性控制
+    //TIM3->CCER1 |= TIM_CCER1_CC2E;//输出使能
+    TIM3->CCER1 |= TIM_CCER1_CC2P | TIM_CCER1_CC2E;//极性控制
     TIM3->OISR |= TIM_OISR_OIS1;//空闲输出
     /* Set the Pulse value */
     TIM3->CCR2H = (uint8_t)(pulse >> 8);

@@ -21,6 +21,7 @@ at_funcationType at_fun[at_cmdNum]={
 {"+PWM2",       5,  at_CmdPWM2,      },
 {"+CFG",        4,  at_CmdConfig,   },
 {"+SAVE",       5,  at_CmdSaveConfig,   },
+{"+RSSI",       5,  at_CmdGetRssi,   },
 
 
 

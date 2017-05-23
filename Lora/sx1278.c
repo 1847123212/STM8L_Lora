@@ -7,6 +7,12 @@
 #define FREQ_STEP               49.59106
 
 /*!
+ * Constant values need to compute the RSSI value
+ */
+#define RSSI_OFFSET_LF                              -164.0
+#define RSSI_OFFSET_HF                              -157.0
+
+/*!
  * Local RF buffer for communication support
  */
 #define RF_BUFFER_SIZE          128
@@ -14,7 +20,8 @@ static uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 
 uint32_t RxTxPacketTime = 0;
-
+static int8_t RxPacketSnrEstimate;
+float RxPacketRssiValue;
 
 // Default settings
 tLoRaSettings LoRaSettings =
@@ -450,7 +457,7 @@ uint8_t SX1278Process( void )
             SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_RX_DONE);
 
         }
-        /*不使用此功能
+        //不使用此功能
         {
             uint8_t rxSnrEstimate;
             rxSnrEstimate = SX1278Read( SX1278_REG_PKT_SNR_VALUE );
@@ -466,8 +473,16 @@ uint8_t SX1278Process( void )
                 RxPacketSnrEstimate = ( rxSnrEstimate & 0xFF ) >> 2;
             }
         }
-        */
         
+        if( RxPacketSnrEstimate < 0 )
+        {
+            RxPacketRssiValue = RSSI_OFFSET_LF +  SX1278Read( SX1278_REG_RSSI_VALUE )  + RxPacketSnrEstimate;
+        }
+        else
+        {
+            RxPacketRssiValue = RSSI_OFFSET_LF + ( 1.0666 * SX1278Read( SX1278_REG_RSSI_VALUE ) );
+        }
+            
         if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
         {
             SX1278Write( SX1278_REG_FIFO_ADDR_PTR, SX1278_FIFO_RX_BASE_ADDR_MAX );

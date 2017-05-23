@@ -54,6 +54,7 @@ typedef struct sLoRaSettings
     uint16_t PreambleLength;            //前导码长度4-1024
 }tLoRaSettings;
 extern tLoRaSettings LoRaSettings;
+extern float RxPacketRssiValue;
 
 void SX1278Init();
 void SX1278Reset();

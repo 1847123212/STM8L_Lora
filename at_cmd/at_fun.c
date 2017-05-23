@@ -296,3 +296,10 @@ void at_CmdSaveConfig(char *pPara)
     at_backOk;
     at_state = at_statIdle;
 }
+void at_CmdGetRssi(char *pPara)
+{
+    uart1_write_string("1");
+    RxPacketRssiValue;
+    at_backOk;
+    at_state = at_statIdle;
+}
