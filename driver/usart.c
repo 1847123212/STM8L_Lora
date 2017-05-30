@@ -1,4 +1,8 @@
 #include "usart.h"
+#define SYSCLK 16000000
+#define BAUDRATE    115200
+#define BaudRate_Mantissa       ((uint32_t)SYSCLK / (BAUDRATE << 4))
+#define BaudRate_Mantissa100    (((uint32_t)SYSCLK * 100) / (BAUDRATE << 4))
 
 void usart_init(USART_TypeDef* USARTx,//123
                 uint32_t BaudRate,
@@ -8,7 +12,7 @@ void usart_init(USART_TypeDef* USARTx,//123
                 USART_Parity_TypeDef USART_Parity,
                 USART_Mode_TypeDef USART_Mode)
 {
-  uint32_t BaudRate_Mantissa = 0;
+  //uint32_t BaudRate_Mantissa = 0;
 
   //CLK_PeripheralClockConfig((CLK_Peripheral_TypeDef)CLK_Peripheral_USART1, ENABLE);
     CLK->PCKENR1 |= CLK_PCKENR1_USART1;//
@@ -28,35 +32,39 @@ void usart_init(USART_TypeDef* USARTx,//123
              USART_Mode);*/
   
   /* Clear the word length and Parity Control bits */
-  USARTx->CR1 &= (uint8_t)(~(USART_CR1_PCEN | USART_CR1_PS | USART_CR1_M));
+ // USARTx->CR1 &= (uint8_t)(~(USART_CR1_PCEN | USART_CR1_PS | USART_CR1_M));
   /* Set the word length bit according to USART_WordLength value */
   /* Set the Parity Control bit to USART_Parity value */
-  USARTx->CR1 |= (uint8_t)((uint8_t)USART_WordLength | (uint8_t)USART_Parity);
+  //USARTx->CR1 |= (uint8_t)((uint8_t)USART_WordLength | (uint8_t)USART_Parity);
   /* Clear the STOP bits */
-  USARTx->CR3 &= (uint8_t)(~USART_CR3_STOP);
+  //USARTx->CR3 &= (uint8_t)(~USART_CR3_STOP);
   /* Set the STOP bits number according to USART_StopBits value */
-  USARTx->CR3 |= (uint8_t)USART_StopBits;
+  //USARTx->CR3 |= (uint8_t)USART_StopBits;
   
   /* Clear the LSB mantissa of USARTDIV */
-  USARTx->BRR1 &= (uint8_t)(~USART_BRR1_DIVM);
+  //USARTx->BRR1 &= (uint8_t)(~USART_BRR1_DIVM);
   /* Clear the MSB mantissa of USARTDIV */
-  USARTx->BRR2 &= (uint8_t)(~USART_BRR2_DIVM);
+  //USARTx->BRR2 &= (uint8_t)(~USART_BRR2_DIVM);
   /* Clear the Fraction bits of USARTDIV */
-  USARTx->BRR2 &= (uint8_t)(~USART_BRR2_DIVF);
+  //USARTx->BRR2 &= (uint8_t)(~USART_BRR2_DIVF);
   
-  BaudRate_Mantissa  = (uint32_t)(CLK_GetClockFreq() / BaudRate );
+  //BaudRate_Mantissa  = (uint32_t)(CLK_GetClockFreq() / BaudRate );
   /* Set the fraction of USARTDIV */
-  USARTx->BRR2 = (uint8_t)((BaudRate_Mantissa >> (uint8_t)8) & (uint8_t)0xF0);
+  //USARTx->BRR2 = (uint8_t)((BaudRate_Mantissa >> (uint8_t)8) & (uint8_t)0xF0);
   /* Set the MSB mantissa of USARTDIV */
-  USARTx->BRR2 |= (uint8_t)(BaudRate_Mantissa & (uint8_t)0x0F);
+  //USARTx->BRR2 |= (uint8_t)(BaudRate_Mantissa & (uint8_t)0x0F);
   /* Set the LSB mantissa of USARTDIV */
-  USARTx->BRR1 = (uint8_t)(BaudRate_Mantissa >> (uint8_t)4);
+  //USARTx->BRR1 = (uint8_t)(BaudRate_Mantissa >> (uint8_t)4);
 
   /* Disable the Transmitter and Receiver */
-  USARTx->CR2 &= (uint8_t)~(USART_CR2_TEN | USART_CR2_REN);
+  //USARTx->CR2 &= (uint8_t)~(USART_CR2_TEN | USART_CR2_REN);
   /* Set TEN and REN bits according to USART_Mode value */
-  USARTx->CR2 |= (uint8_t)USART_Mode;
-  
+  //USARTx->CR2 |= (uint8_t)USART_Mode;
+    USART1->BRR2 |= (uint8_t)((uint8_t)(((BaudRate_Mantissa100 - (BaudRate_Mantissa * 100)) << 4) / 100) & (uint8_t)0x0F) |\
+                   (uint8_t)((BaudRate_Mantissa >> 4) & (uint8_t)0xF0);  
+    USART1->BRR1 |= (uint8_t)BaudRate_Mantissa; 
+    USART1->CR2 |= (uint8_t)(USART_CR2_TEN | USART_CR2_REN);  //使能收发   
+   
   enableInterrupts();
 
   /* Enable the USART Receive interrupt: this interrupt is generated when the USART

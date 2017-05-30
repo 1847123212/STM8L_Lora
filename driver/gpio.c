@@ -1,10 +1,14 @@
 #include "gpio.h"
 
 
-
+void gpio_pb0_init()
+{
+      GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_Out_PP_Low_Fast);
+}
 void gpio_pb0_write(uint8_t GPIO_BitVal)
 {
     GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_Out_PP_Low_Fast);
+    //CLK->PCKENR1 &= ~CLK_PCKENR1_TIM2;
     if (GPIO_BitVal != RESET)
     {
         GPIOB->ODR |= GPIO_Pin_0;
@@ -13,11 +17,12 @@ void gpio_pb0_write(uint8_t GPIO_BitVal)
     {
         GPIOB->ODR &= (uint8_t)(~GPIO_Pin_0);
     }
-}
+}/*
 void gpio_pb0_read()
 {
     GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_In_FL_IT);
 }
+*/
 void gpio_pb0_toggle()
 {
     GPIOB->ODR ^= GPIO_Pin_0;
@@ -55,6 +60,7 @@ void gpio_pd0_init()
 void gpio_pd0_write(uint8_t GPIO_BitVal)
 {
     GPIO_Init(GPIOD,GPIO_Pin_0,GPIO_Mode_Out_PP_Low_Fast);  
+    //CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
     if (GPIO_BitVal != RESET)
     {
         GPIOD->ODR |= GPIO_Pin_0;
@@ -69,8 +75,4 @@ void gpio_pd0_toggle()
 {
     GPIOD->ODR ^= GPIO_Pin_0;
     //GPIO_ToggleBits(GPIOD,GPIO_Pin_0);
-}
-void gpio_pb0_init()
-{
-      GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_Out_PP_Low_Fast);
 }

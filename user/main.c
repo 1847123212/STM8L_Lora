@@ -9,6 +9,8 @@ uint8_t buffer[8];
 uint8_t bufferLength;
 uint8_t masterOn = 0;
 const uint8_t info[]="MODULE:XLoRa-01\nVendor:eBox&Widora\nVersion:V0.1\nWeb:www.widora.org\n";
+
+
 void master()
 {
     switch( SX1278Process( ) )
@@ -69,12 +71,10 @@ void main(void)
     uart1_write_string("a");
     uart1_write_cstring(info);
     SX1278Init();
-    gpio_pb0_init();
-    gpio_pd0_init();
-    gpio_pc4_init();
+
     gpio_pc4_write(1);
-    pwm1_config(0,59999,3999);
-    pwm2_config(0,39999,19999);
+   // pwm1_config(0,59999,3999);
+    //pwm2_config(0,39999,19999);
     //SX1278SetTxPacket(buf,8);
     if(masterOn == 1)
     {

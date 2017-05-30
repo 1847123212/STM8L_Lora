@@ -358,11 +358,11 @@ void SX1278RxMode(bool RxSingleOn)
 
 void SX1278GetRxPacket( void *buffer, uint8_t *size )
 {
-  LORA_DBG("SX1278GetRxPacket()");
+    LORA_DBG("SX1278GetRxPacket()");
     *size = RxPacketSize;
     RxPacketSize = 0;
     memcpy( ( void * )buffer, ( void * )RFBuffer, ( size_t )*size );
-  LORA_DBG("SX1278GetRxPacket()");
+    LORA_DBG("SX1278GetRxPacket()");
 }
 
 void SX1278SetRFState( uint8_t state )

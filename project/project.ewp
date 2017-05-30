@@ -522,7 +522,7 @@
       <archiveVersion>1</archiveVersion>
       <data>
         <prebuild></prebuild>
-        <postbuild></postbuild>
+        <postbuild>"$TOOLKIT_DIR$\bin\ielftool.exe" --bin --verbose  "$TARGET_PATH$" "$TARGET_BPATH$.bin"</postbuild>
       </data>
     </settings>
     <settings>
@@ -606,11 +606,11 @@
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\config\lnkstm8l051f3.icf</state>
+          <state>$PROJ_DIR$\..\user\lnkstm8l051f3.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -650,7 +650,7 @@
         </option>
         <option>
           <name>IlinkUseExtraOptions</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkExtraOptions</name>

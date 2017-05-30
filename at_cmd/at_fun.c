@@ -110,6 +110,7 @@ void at_CmdReg(char *pPara)
 #endif
 void at_CmdPB0(char *pPara)
 {
+    CLK->PCKENR1 &= ~CLK_PCKENR1_TIM2;//关闭pwm输出
     if(*pPara == '=')
     {
         pPara++;
@@ -125,7 +126,6 @@ void at_CmdPB0(char *pPara)
         GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_In_FL_No_IT);
         if(GPIOB->IDR & GPIO_Pin_0)
         {
-            
             uart1_write_string("1");
         }
         else
@@ -163,6 +163,7 @@ void at_CmdPC4(char *pPara)
 }
 void at_CmdPD0(char *pPara)
 {
+    CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
     if(*pPara++ == '=')
     {
         if(*pPara == '0')
