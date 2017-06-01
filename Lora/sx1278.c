@@ -15,7 +15,7 @@
 /*!
  * Local RF buffer for communication support
  */
-#define RF_BUFFER_SIZE          128
+#define RF_BUFFER_SIZE          256
 static uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 
@@ -23,6 +23,7 @@ uint32_t RxTxPacketTime = 0;
 static int8_t RxPacketSnrEstimate;
 float RxPacketRssiValue;
 
+uint16_t LoRaAddr;
 // Default settings
 tLoRaSettings LoRaSettings =
 {
@@ -369,6 +370,10 @@ void SX1278SetRFState( uint8_t state )
 {
     RFLRState = state;
 }
+uint8_t SX1278GetRFState()
+{
+    return RFLRState;
+}
 uint8_t SX1278Process( void )
 {
     uint32_t LastRxTxTime = 0;
@@ -377,6 +382,7 @@ uint8_t SX1278Process( void )
     {
     case RFLR_STATE_IDLE:
         SX1278SetOpMode( SX1278_SLEEP );
+        result = RF_IDLE;
         break;
     case RFLR_STATE_RX_INIT:
         LORA_DBG("RX_INIT");
@@ -395,6 +401,7 @@ uint8_t SX1278Process( void )
             SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_RX_DONE);
             RFLRState = RFLR_STATE_RX_DONE;
         }
+
         /*
         不使用硬件的超时中断
         if( DIO1_PIN_READ == 1 ) // RxTimeout

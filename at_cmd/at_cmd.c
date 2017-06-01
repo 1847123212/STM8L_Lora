@@ -2,26 +2,28 @@
 #include "at_fun.h"
 #include "string.h"
 
-#define at_cmdNum   32
+#define at_cmdNum   20
 at_funcationType at_fun[at_cmdNum]={
   
 {NULL,          0,  at_CmdNull,     },
 {"+RST",        4,  at_CmdReset,    },
+{"+STATE",      6,  at_CmdState,    },
 {"+SLEEP",      6,  at_CmdSleep,    },
+{"+ADDR",       5,  at_CmdAddr,     },
 #if USE_REG
 {"+REG",        4,  at_CmdReg,      },
 #endif
 {"+RX",         3,  at_CmdRxMode,   },
 {"+TX",         3,  at_CmdTxPacket, },
-{"+VERSION",    8,  at_CmdVersion,  },
+{"+VER",        4,  at_CmdVersion,  },
 {"+PB0",        4,  at_CmdPB0,      },
 {"+PC4",        4,  at_CmdPC4,      },
 {"+PD0",        4,  at_CmdPD0,      },
-{"+PWM1",       5,  at_CmdPWM1,      },
-{"+PWM2",       5,  at_CmdPWM2,      },
+{"+PWM1",       5,  at_CmdPWM1,     },
+{"+PWM2",       5,  at_CmdPWM2,     },
 {"+CFG",        4,  at_CmdConfig,   },
 {"+SAVE",       5,  at_CmdSaveConfig,   },
-{"+RSSI",       5,  at_CmdGetRssi,   },
+{"+RSSI",       5,  at_CmdGetRssi,  },
 
 
 
@@ -153,7 +155,6 @@ void at_cmdProcess(uint8_t *pAtRcvData)
   else 
   {
     at_CmdError();
-  	at_backError;
   }
 
 }

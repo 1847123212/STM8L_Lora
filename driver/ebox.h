@@ -11,6 +11,6 @@
 #include "gpio.h"
 #include "ebox_spi.h"
 
-#define VERSION "V0.1"
+#define VERSION "V0.1\r\n"
 
 #endif

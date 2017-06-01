@@ -8,6 +8,7 @@
 void at_CmdError();
 void at_CmdNull(char *pPara);
 void at_CmdReset(char *pPara);
+void at_CmdState(char *pPara);
 void at_CmdSleep(char *pPara);
 void at_CmdVersion(char *pPara);
 #if USE_REG
@@ -27,5 +28,6 @@ void at_CmdTxPacket(char *pPara);
 
 void at_CmdSaveConfig(char *pPara);
 void at_CmdGetRssi(char *pPara);
+void at_CmdAddr(char *pPara);
 
 #endif

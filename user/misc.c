@@ -1,6 +1,5 @@
 #include "misc.h"
 #include <stdlib.h>
-
 #if USE_REG
 extern char* ultoa( unsigned long value, char *string, int radix )
 {
@@ -39,6 +38,8 @@ extern char* ultoa( unsigned long value, char *string, int radix )
 
   return string;
 }
+
+
 #endif
 
 char C2D(
@@ -53,6 +54,16 @@ char C2D(
         return 10 + c - 'A';
 
     return (char)c;
+}
+char D2C(
+    uint8_t val	
+)
+{
+    if (val >= 0 && val <= 9)
+        return val + '0';
+    if (val >= 10 && val <= 15)
+        return  'A' + ( val - 10);
+    return (char)val;
 }
 
 uint32_t ATOI32(

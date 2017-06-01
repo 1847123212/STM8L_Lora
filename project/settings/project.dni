@@ -38,7 +38,7 @@ ShowSource=1
 [Simulator]
 Freq=16000000
 [DebugChecksum]
-Checksum=-1871834526
+Checksum=1312677549
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -57,10 +57,7 @@ LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Lora\sx1278-hal.h}.23.1" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\user\main.c}.79.7" 1 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\user\main.c}.87.9" 1 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\user\main.c}.81.5" 1 0 0 0 "" 0 ""
-Count=4
+Count=1
 [Aliases]
 Count=0
 SuppressDialog=0

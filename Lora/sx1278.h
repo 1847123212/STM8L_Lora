@@ -55,6 +55,7 @@ typedef struct sLoRaSettings
 }tLoRaSettings;
 extern tLoRaSettings LoRaSettings;
 extern float RxPacketRssiValue;
+extern uint16_t LoRaAddr;
 
 void SX1278Init();
 void SX1278Reset();
@@ -71,6 +72,7 @@ void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len);
 void SX1278RxMode(bool RxSingleOn);
 void SX1278GetRxPacket( void *buffer, uint8_t *size );
 void SX1278SetRFState( uint8_t state );
+uint8_t SX1278GetRFState();
 uint8_t SX1278Process( void );
 void SaveConfig();
 void LoadConfig();
