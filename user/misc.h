@@ -3,5 +3,6 @@
 #include "ebox_core.h"
 extern char* ultoa( unsigned long value, char *string, int radix );
 uint32_t ATOI32(char *str, int base);
+char C2D(uint8_t c);
 char D2C(uint8_t val);
 #endif
