@@ -8,8 +8,8 @@
 #define AT_ERR_SYMBLE   "ERR:SYMBLE\r\n"
 #define AT_ERR_PARA     "ERR:SYMBLE\r\n"
 
-#define at_backOk        uart1_write_string("OK\r\n")
-#define at_backError     uart1_write_string("ERR\r\n")
+#define at_backOk       uart1_write_string("OK\r\n")
+#define at_backErr      uart1_write_string("ERR\r\n")
 #define at_backErrorCode(x)     uart1_write_string(x)
 //#define at_backTeError   "+CTE ERROR: %d\r\n"
 

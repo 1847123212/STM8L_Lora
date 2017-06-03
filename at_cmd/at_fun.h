@@ -4,6 +4,7 @@
 #include "ebox.h"
 
 #define USE_REG 0
+#define USE_READ_STATE 0
 
 void at_CmdError();
 void at_CmdNull(char *pPara);

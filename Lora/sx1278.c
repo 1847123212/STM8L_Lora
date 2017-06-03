@@ -16,7 +16,7 @@
  * Local RF buffer for communication support
  */
 #define RF_BUFFER_SIZE          256
-static uint8_t RFBuffer[RF_BUFFER_SIZE];
+uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 
 uint32_t RxTxPacketTime = 0;
@@ -24,6 +24,8 @@ static int8_t RxPacketSnrEstimate;
 float RxPacketRssiValue;
 
 uint16_t LoRaAddr;
+
+Packet_t LoRaPacket;
 // Default settings
 tLoRaSettings LoRaSettings =
 {
@@ -279,18 +281,50 @@ void SX1278Send(uint8_t* pBuffer,uint8_t len)
 }
 void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len)
 {
+    uint8_t *p = RFBuffer;
     if(LoRaSettings.ImplicitHeaderOn == TRUE && LoRaSettings.PayloadLength < len)
     {
         TxPacketSize = LoRaSettings.PayloadLength;
     }
     else
     {
-        TxPacketSize = len;
+        TxPacketSize = len ;
     }
-    memcpy( ( void * )RFBuffer, pBuffer, ( size_t )TxPacketSize ); 
+    *p++ =(uint8_t)((LoRaAddr&0xff00)>>8);
+    *p++ =(LoRaAddr&0x00ff);
+    memcpy( ( void * )(RFBuffer + 2), pBuffer, ( size_t )(TxPacketSize + 2) ); 
     RFLRState = RFLR_STATE_TX_INIT;
 }
+void SX1278SetTxPacket1(Packet_t* packet)
+{
+    uint8_t *p = RFBuffer;
+    if(LoRaSettings.ImplicitHeaderOn == TRUE && LoRaSettings.PayloadLength < packet->len)
+    {
+        TxPacketSize = LoRaSettings.PayloadLength;
+    }
+    else
+    {
+        TxPacketSize = packet->len ;
+    }
+    *p++ =packet->source.byte[0];
+    *p++ =packet->source.byte[1];
+    *p++ =packet->destination.byte[0];
+    *p++ =packet->destination.byte[1];
+    memcpy( ( void * )(RFBuffer + 4), packet->data, ( size_t )(TxPacketSize - 4 ) ); 
+    RFLRState = RFLR_STATE_TX_INIT;
+}
+void SX1278ForwardPacket()
+{
+   // *size = RxPacketSize;
+    //memcpy( ( void * )buffer, ( void * )RFBuffer, ( size_t )*size );
+    *(RFBuffer+2) = ':';
+    *(RFBuffer+3) = ':';
+    uart1_write_string("+IPD:");
+    uart1_write(RFBuffer,RxPacketSize);
+    uart1_write_string("\r\n");
 
+    RxPacketSize = 0;
+}
 void SX1278RxMode(bool RxSingleOn)
 {
   LORA_DBG("SX1278RxMode()");

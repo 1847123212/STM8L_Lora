@@ -53,9 +53,26 @@ typedef struct sLoRaSettings
     uint8_t PayloadLength;              //用户数据长度：1-255
     uint16_t PreambleLength;            //前导码长度4-1024
 }tLoRaSettings;
+
+typedef union 
+{
+    uint16_t val;
+    uint8_t byte[2];
+
+}xuint16_t;
+
+typedef struct 
+{
+    xuint16_t source;
+    xuint16_t destination;
+    uint8_t *data;
+    uint8_t len;
+}Packet_t;
+
 extern tLoRaSettings LoRaSettings;
 extern float RxPacketRssiValue;
 extern uint16_t LoRaAddr;
+extern Packet_t LoRaPacket;
 
 void SX1278Init();
 void SX1278Reset();
@@ -68,9 +85,12 @@ void SX1278SetRFPower( int8_t power );
 void SX1278TxMode() ;
 void SX1278Send(uint8_t* pBuffer,uint8_t len);
 void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len);
+void SX1278SetTxPacket1(Packet_t* packet);
 
 void SX1278RxMode(bool RxSingleOn);
 void SX1278GetRxPacket( void *buffer, uint8_t *size );
+void SX1278ForwardPacket();
+
 void SX1278SetRFState( uint8_t state );
 uint8_t SX1278GetRFState();
 uint8_t SX1278Process( void );

@@ -4,7 +4,7 @@
 #include "sx1278.h"
 #include "at_cmd.h"
 #include "at_port.h"
-uint8_t buffer[200];
+uint8_t buffer[8];
 uint8_t bufferLength;
 uint8_t masterOn = 0;
 const uint8_t info[]="MODULE:XLoRa-01\r\nVendor:eBox&Widora\r\nVersion:V0.1\r\nWeb:www.widora.org\r\n";
@@ -36,9 +36,9 @@ void slave()
         //gpio_pb0_toggle();
         break;
     case RF_RX_DONE:
-        SX1278GetRxPacket(buffer,&bufferLength);
+        SX1278ForwardPacket();
         //uart1_write_string("+IPD");
-        uart1_write(buffer,bufferLength);
+        //uart1_write(buffer,bufferLength);
         
         memset(buffer,0,8);
         SX1278SetRFState(RFLR_STATE_RX_INIT);

@@ -185,18 +185,24 @@ void at_CmdReg(char *pPara)
 void at_CmdPB0(char *pPara)
 {
     CLK->PCKENR1 &= ~CLK_PCKENR1_TIM2;//关闭pwm输出
+
     if(*pPara == '=')
     {
+        GPIOB->DDR |= GPIO_Pin_0;//OUTPUT
+        GPIOB->CR1 |= GPIO_Pin_0;//PP
+        //GPIOB->CR2 |= GPIO_Pin_0;//低速模式,默认值
         pPara++;
         if(*pPara == '0')
-            gpio_pb0_write(0);
+            GPIOB->ODR &= (uint8_t)(~GPIO_Pin_0);
         else
-            gpio_pb0_write(1);
+            GPIOB->ODR |= GPIO_Pin_0;
         at_backOk;
     }
     else if(*pPara == '?')
     {
-        GPIO_Init(GPIOB,GPIO_Pin_0,GPIO_Mode_In_FL_No_IT);
+        GPIOB->DDR &= (uint8_t)(~(GPIO_Pin_0));//INPUT
+        GPIOB->CR1 &= (uint8_t)(~(GPIO_Pin_0));//FLOAT
+        GPIOB->CR2 &= (uint8_t)(~(GPIO_Pin_0));//无中断,默认值
         if(GPIOB->IDR & GPIO_Pin_0)
         {
             uart1_write_string("1\r\n");
@@ -217,19 +223,25 @@ void at_CmdPC4(char *pPara)
 {
     if(*pPara == '=')
     {
+        GPIOC->DDR |= GPIO_Pin_4;//OUTPUT
+        GPIOC->CR1 |= GPIO_Pin_4;//PP
+        //GPIOC->CR2 |= GPIO_Pin_4;//低速模式,默认值
+
         pPara++;
         if(*pPara == '0')
-            gpio_pc4_write(0);
+            GPIOC->ODR &= (uint8_t)(~GPIO_Pin_4);
         else
-            gpio_pc4_write(1);
+            GPIOC->ODR |= GPIO_Pin_4;
         at_backOk;
     }
     else if(*pPara == '?')
     {
-        GPIO_Init(GPIOC,GPIO_Pin_4,GPIO_Mode_In_FL_No_IT);
+        GPIOC->DDR &= (uint8_t)(~(GPIO_Pin_4));//INPUT
+        GPIOC->CR1 &= (uint8_t)(~(GPIO_Pin_4));//FLOAT
+        GPIOC->CR2 &= (uint8_t)(~(GPIO_Pin_4));//无中断,默认值
+
         if(GPIOC->IDR & GPIO_Pin_4)
         {
-            
             uart1_write_string("1\r\n");
         }
         else
@@ -247,16 +259,20 @@ void at_CmdPD0(char *pPara)
     CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
     if(*pPara == '=')
     {
+        GPIOD->DDR |= GPIO_Pin_0;//OUTPUT
+        GPIOD->CR1 |= GPIO_Pin_0;//PP
         pPara++;
         if(*pPara == '0')
-            gpio_pd0_write(0);
+            GPIOD->ODR &= (uint8_t)(~GPIO_Pin_0);
         else
-            gpio_pd0_write(1);
+            GPIOD->ODR |= GPIO_Pin_0;
         at_backOk;
     }
     else if(*pPara == '?')
     {
-        GPIO_Init(GPIOD,GPIO_Pin_0,GPIO_Mode_In_FL_No_IT);
+        GPIOD->DDR &= (uint8_t)(~(GPIO_Pin_0));//INPUT
+        GPIOD->CR1 &= (uint8_t)(~(GPIO_Pin_0));//FLOAT
+        GPIOD->CR2 &= (uint8_t)(~(GPIO_Pin_0));//无中断,默认值
         if(GPIOD->IDR & GPIO_Pin_0)
         {
             uart1_write_string("1\r\n");
@@ -314,15 +330,17 @@ void at_CmdPWM2(char *pPara)
 
 void at_CmdConfig(char *pPara)
 {
+#if USE_READ_STATE
     uint8_t buf[8];
     uint8_t len;
+#endif
 
     if(*pPara == '=')
     {
         pPara++;
         if(CheckPara(pPara) == FALSE) 
         {
-            at_backError;
+            at_backErr;
             at_state = at_statIdle;
             return ;
         }
@@ -345,13 +363,49 @@ void at_CmdConfig(char *pPara)
     }
     else if(*pPara == '?')
     {
+#if USE_READ_STATE
         len = digital2HexString(LoRaSettings.RFFrequency,buf);
         uart1_write((uint8_t*)buf,len);
         uart1_write_string(",");
         len = digital2HexString(LoRaSettings.Power,buf);
         uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.SignalBw,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.SpreadingFactor,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.ErrorCoding,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.CrcOn,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.ImplicitHeaderOn,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.RxSingleOn,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.HopPeriod,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.RxPacketTimeout,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");        
+        len = digital2HexString(LoRaSettings.PayloadLength,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");        
+        len = digital2HexString(LoRaSettings.PreambleLength,buf);
+        uart1_write((uint8_t*)buf,len);
         uart1_write_string("\r\n");
         at_backOk;
+#else
+        at_backErr;
+#endif
+        
+        
     }
     else
     {
@@ -380,9 +434,16 @@ void at_CmdTxPacket(char *pPara)
         {
             len++;
         }
+        len -=2;//删除\r\n
         if(SX1278GetRFState() != RFLR_STATE_TX_RUNNING)
         {
-            SX1278SetTxPacket((uint8_t *)pPara,(len-1));
+            LoRaPacket.source.val = LoRaAddr;
+            LoRaPacket.destination.val = LoRaAddr;
+            LoRaPacket.data = (uint8_t *)pPara;
+            LoRaPacket.len = len+4;
+            
+
+            SX1278SetTxPacket1(&LoRaPacket);
             at_backOk;
         }
         else
@@ -431,14 +492,14 @@ void at_CmdAddr(char *pPara)
     }
     else if(*pPara == '?')
     {
-        /*
+        
         buf[0] = D2C((LoRaAddr&0xF000) >> 12);
         buf[1] = D2C((LoRaAddr&0x0F00) >> 8);
         buf[2] = D2C((LoRaAddr&0x00F0) >> 4);
         buf[3] = D2C((LoRaAddr&0x000F) >> 0);
-        */
-        len = digital2HexString(LoRaAddr,buf);
-        uart1_write((uint8_t*)buf,len);
+        
+        //len = digital2HexString(LoRaAddr,buf);
+        uart1_write((uint8_t*)buf,4);
         uart1_write_string("\r\n");
         at_backOk;
     }

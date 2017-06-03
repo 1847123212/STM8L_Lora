@@ -106,7 +106,7 @@ void at_cmdProcess(uint8_t *pAtRcvData)
         else
         {
 //        uart0_sendStr("no this fun\r\n"); //Relax, it's just a code.
-            at_backError;
+            at_backErr;
         }
       /*
 //    os_printf("cmd id: %d\r\n", cmdId);
