@@ -68,7 +68,7 @@
           
           
           
-        <item>RFBuffer</item><item>pBuffer</item><item>at_cmdLine</item><item>packet</item><item>LoRaPacket</item><item></item></expressions>
+        <item>RFBuffer</item><item>pBuffer</item><item>at_cmdLine</item><item>packet</item><item>LoRaPacket</item><item/></expressions>
         <col-names>
           
           

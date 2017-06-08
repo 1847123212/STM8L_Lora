@@ -6,45 +6,6 @@
 
 extern at_stateType  at_state;
 
-uint32_t getPara(char **pPara,uint8_t base)
-{
-    char buf[15];
-    int i = 0;
-    if(**pPara == ',' || **pPara == '=' )(*pPara)++;//跳过前面非数字区域
-    while(
-          (**pPara >= '0' && **pPara <= '9') ||
-          (**pPara >= 'a' && **pPara <= 'f') || 
-          (**pPara >= 'A' && **pPara <= 'F')
-            )
-    {
-        buf[i++] = **pPara;
-        (*pPara)++;
-    }
-    buf[i++] = '\0';
-    return  ATOI32((char *)buf,base);
-}
-uint8_t digital2HexString(uint32_t val,uint8_t *buf)
-{
-    uint8_t i ;
-    if(val <= 0xff)
-    {
-       // for(i = 0; i < 2; i++)
-            buf[0] = D2C((val&0xf0)>>4);
-            buf[1] = D2C((val&0x0f)>>0);
-            i = 2;
-    }
-    else if(val <= 0xffff)
-    {
-        for(i = 0; i < 4; i++)
-            buf[i] = D2C((val>>(12 - (i*4)))&0xf);
-    }
-    else
-    {
-        for(i = 0; i < 8; i++)
-            buf[i] = D2C((val>>(28 - (i*4)))&0xf);
-    }
-    return (i);
-}
 
 bool CheckPara(char *pPara)
 {

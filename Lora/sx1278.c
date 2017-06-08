@@ -317,6 +317,11 @@ void SX1278ForwardPacket()
 {
    // *size = RxPacketSize;
     //memcpy( ( void * )buffer, ( void * )RFBuffer, ( size_t )*size );
+    uint8_t buf[2];
+    
+    buf[0] = *(RFBuffer+0);
+    buf[1] = *(RFBuffer+1);
+      
     *(RFBuffer+2) = ':';
     *(RFBuffer+3) = ':';
     uart1_write_string("+IPD:");
