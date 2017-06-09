@@ -7,6 +7,7 @@ typedef enum{
   at_statProcess,
   at_statIpSending,
   at_statIpSended,
+  at_statTranInit,
   at_statIpTraning
 }at_stateType;
 

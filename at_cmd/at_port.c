@@ -14,6 +14,7 @@ void at_recv_event(char temp)
 {
     static uint8_t atHead[2];
     static uint8_t *pCmdLine;
+    static uint16_t count = 0;
 
     switch(at_state)
     {
@@ -50,14 +51,31 @@ void at_recv_event(char temp)
         uart1_write_string("ERR\r\n");
       }
       break;
-      /*
-    case at_statIpSending:
-      if(temp == '\n')
+      
+      
+    case at_statTranInit://no break;
+        pCmdLine = at_cmdLine;
+        at_state = at_statIpTraning;
+    case at_statIpTraning:
+      if(count  < (LoRaPacket.len - 4) )
       {
-//      system_os_post(at_busyTaskPrio, 0, 1);
-        uart1_write_string("ERR\r\n");
+        *pCmdLine = temp;
+        pCmdLine++;
+        count++;
+      }
+      
+      if(count >= (LoRaPacket.len - 4))
+      {
+            LoRaPacket.source.val = LoRaAddr;
+            LoRaPacket.destination.val = DestAddr;
+            LoRaPacket.data = (uint8_t *)at_cmdLine;
+            SX1278SetTxPacket1(&LoRaPacket);
+            uart1_write_string("END\r\n");
+            at_state = at_statIdle;
+            count = 0;
       }
       break;
+      /*
     case at_statIpSended: //send data
     if(temp == '\n')
     {

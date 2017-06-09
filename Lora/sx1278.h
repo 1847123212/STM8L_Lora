@@ -2,6 +2,7 @@
 #define __SX1278_H
 #include "ebox.h"
 #include "sx1278-hal.h"
+#include "misc.h"
 extern uint32_t RxTcPacketTime;
 
 typedef enum
@@ -54,12 +55,7 @@ typedef struct sLoRaSettings
     uint16_t PreambleLength;            //前导码长度4-1024
 }tLoRaSettings;
 
-typedef union 
-{
-    uint16_t val;
-    uint8_t byte[2];
 
-}xuint16_t;
 
 typedef struct 
 {
@@ -71,7 +67,7 @@ typedef struct
 
 extern tLoRaSettings LoRaSettings;
 extern float RxPacketRssiValue;
-extern uint16_t LoRaAddr;
+extern uint16_t LoRaAddr,DestAddr;
 extern Packet_t LoRaPacket;
 
 void SX1278Init();

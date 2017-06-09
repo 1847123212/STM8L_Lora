@@ -24,6 +24,8 @@ at_funcationType at_fun[at_cmdNum]={
 {"+CFG",        4,  at_CmdConfig,   },
 {"+SAVE",       5,  at_CmdSaveConfig,   },
 {"+RSSI",       5,  at_CmdGetRssi,  },
+{"+DEST",       5,  at_CmdSetDestAddr,  },
+{"+SEND",       5,  at_CmdSend,  },
 
 
 

@@ -1,6 +1,15 @@
 #ifndef __MISC_H
 #define __MISC_H
 #include "ebox_core.h"
+
+typedef union 
+{
+    uint16_t val;
+    uint8_t byte[2];
+
+}xuint16_t;
+
+
 extern char* ultoa( unsigned long value, char *string, int radix );
 uint32_t ATOI32(char *str, int base);
 char C2D(uint8_t c);

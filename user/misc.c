@@ -97,14 +97,15 @@ uint32_t getPara(char **pPara,uint8_t base)
 uint8_t digital2HexString(uint32_t val,uint8_t *buf)
 {
     uint8_t i ;
+    /*
     if(val <= 0xff)
     {
        // for(i = 0; i < 2; i++)
             buf[0] = D2C((val&0xf0)>>4);
             buf[1] = D2C((val&0x0f)>>0);
             i = 2;
-    }
-    else if(val <= 0xffff)
+    }*/
+    if(val <= 0xffff)
     {
         for(i = 0; i < 4; i++)
             buf[i] = D2C((val>>(12 - (i*4)))&0xf);

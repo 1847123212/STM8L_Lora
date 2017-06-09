@@ -23,12 +23,13 @@ void at_CmdPWM1(char *pPara);
 void at_CmdPWM2(char *pPara);
 
 void at_CmdConfig(char *pPara);
-void at_CmdSetAddres(char *pPara);
 void at_CmdRxMode(char *pPara);
 void at_CmdTxPacket(char *pPara);
 
 void at_CmdSaveConfig(char *pPara);
 void at_CmdGetRssi(char *pPara);
 void at_CmdAddr(char *pPara);
+void at_CmdSetDestAddr(char *pPara);
+void at_CmdSend(char *pPara);
 
 #endif

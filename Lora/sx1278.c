@@ -1,6 +1,6 @@
 #include "sx1278.h"
 #include "eeprom.h"
-
+#include "misc.h"
 
 
 #define XTAL_FREQ               26000000
@@ -23,7 +23,7 @@ uint32_t RxTxPacketTime = 0;
 static int8_t RxPacketSnrEstimate;
 float RxPacketRssiValue;
 
-uint16_t LoRaAddr;
+uint16_t LoRaAddr,DestAddr;
 
 Packet_t LoRaPacket;
 // Default settings
@@ -36,7 +36,7 @@ tLoRaSettings LoRaSettings =
     10,                // SpreadingFactor [6: 64, 7: 128, 8: 256, 9: 512, 10: 1024, 11: 2048, 12: 4096  chips]
     1,                // ErrorCoding [1: 4/5, 2: 4/6, 3: 4/7, 4: 4/8]
     TRUE,             // CrcOn [0: OFF, 1: ON]
-    TRUE,            // ImplicitHeaderOn [0: OFF, 1: ON]
+    FALSE,            // ImplicitHeaderOn [0: OFF, 1: ON]
     FALSE,                // RxSingleOn [0: Continuous, 1 Single]
     FALSE,                // FreqHopOn [0: OFF, 1: ON]
     4,                // HopPeriod Hops every frequency hopping period symbols
@@ -317,16 +317,33 @@ void SX1278ForwardPacket()
 {
    // *size = RxPacketSize;
     //memcpy( ( void * )buffer, ( void * )RFBuffer, ( size_t )*size );
-    uint8_t buf[2];
+    uint8_t buf[5] ;
+    uint8_t len;
+    xuint16_t sourceAddr;
+    xuint16_t destAddr;
     
-    buf[0] = *(RFBuffer+0);
-    buf[1] = *(RFBuffer+1);
-      
-    *(RFBuffer+2) = ':';
-    *(RFBuffer+3) = ':';
-    uart1_write_string("+IPD:");
-    uart1_write(RFBuffer,RxPacketSize);
-    uart1_write_string("\r\n");
+    sourceAddr.byte[0] = *(RFBuffer+0);
+    sourceAddr.byte[1] = *(RFBuffer+1);
+    
+    destAddr.byte[0] = *(RFBuffer+2);
+    destAddr.byte[1] = *(RFBuffer+3);
+    if(LoRaAddr == destAddr.val || destAddr.val == 0xffff || LoRaAddr == 0xffff)
+    {
+        uart1_write_string("+LR:");
+        buf[0] = D2C((sourceAddr.val&0xF000) >> 12);
+        buf[1] = D2C((sourceAddr.val&0x0F00) >> 8);
+        buf[2] = D2C((sourceAddr.val&0x00F0) >> 4);
+        buf[3] = D2C((sourceAddr.val&0x000F) >> 0);
+        buf[4] = ':';
+        uart1_write((uint8_t*)buf,5);
+        uart1_write((RFBuffer+4),RxPacketSize-4);
+        uart1_write_string("\r\n"); 
+    }
+    //*(RFBuffer+0) = ':';
+    //*(RFBuffer+1) = ':';
+    //*(RFBuffer+2) = ':';
+    //*(RFBuffer+3) = ':';
+
 
     RxPacketSize = 0;
 }

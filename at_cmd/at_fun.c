@@ -375,9 +375,19 @@ void at_CmdConfig(char *pPara)
     at_state = at_statIdle;
     
 }
-void at_CmdSetAddres(char *pPara)
-{
 
+void at_CmdSaveConfig(char *pPara)
+{
+    SaveConfig();
+    at_backOk;
+    at_state = at_statIdle;
+}
+void at_CmdGetRssi(char *pPara)
+{
+    uart1_write_string("1");
+    RxPacketRssiValue;
+    at_backOk;
+    at_state = at_statIdle;
 }
 void at_CmdRxMode(char *pPara)
 {
@@ -399,11 +409,9 @@ void at_CmdTxPacket(char *pPara)
         if(SX1278GetRFState() != RFLR_STATE_TX_RUNNING)
         {
             LoRaPacket.source.val = LoRaAddr;
-            LoRaPacket.destination.val = LoRaAddr;
+            LoRaPacket.destination.val = DestAddr;
             LoRaPacket.data = (uint8_t *)pPara;
             LoRaPacket.len = len+4;
-            
-
             SX1278SetTxPacket1(&LoRaPacket);
             at_backOk;
         }
@@ -419,23 +427,9 @@ void at_CmdTxPacket(char *pPara)
     }
     at_state = at_statIdle;
 }
-void at_CmdSaveConfig(char *pPara)
-{
-    SaveConfig();
-    at_backOk;
-    at_state = at_statIdle;
-}
-void at_CmdGetRssi(char *pPara)
-{
-    uart1_write_string("1");
-    RxPacketRssiValue;
-    at_backOk;
-    at_state = at_statIdle;
-}
 void at_CmdAddr(char *pPara)
 {
     uint8_t buf[8];
-    uint8_t len;
 
     if(*pPara == '=')
     {
@@ -469,4 +463,53 @@ void at_CmdAddr(char *pPara)
         at_backErrorCode(AT_ERR_SYMBLE);
     }
     at_state = at_statIdle;
+}
+void at_CmdSetDestAddr(char *pPara)
+{
+    uint8_t buf[8];
+
+    if(*pPara == '=')
+    {
+        DestAddr = getPara(&pPara,16);
+        at_backOk;
+    }
+    else if(*pPara == '?')
+    {
+        
+        buf[0] = D2C((DestAddr&0xF000) >> 12);
+        buf[1] = D2C((DestAddr&0x0F00) >> 8);
+        buf[2] = D2C((DestAddr&0x00F0) >> 4);
+        buf[3] = D2C((DestAddr&0x000F) >> 0);
+        
+        //len = digital2HexString(LoRaAddr,buf);
+        uart1_write((uint8_t*)buf,4);
+        uart1_write_string("\r\n");
+        at_backOk;
+    }
+    else
+    {
+        at_backErrorCode(AT_ERR_SYMBLE);
+    }
+    at_state = at_statIdle;
+}
+void at_CmdSend(char *pPara)
+{
+    if(*pPara == '=')
+    {
+        if(SX1278GetRFState() != RFLR_STATE_TX_RUNNING)
+        {
+            LoRaPacket.len = getPara(&pPara,10)+4;
+            at_backOk;
+            uart1_write_string(">");
+        }
+        else
+        {
+            at_backErrorCode(AT_ERR_RF_BUSY);
+        }
+    }
+    else
+    {
+        at_backErrorCode(AT_ERR_SYMBLE);
+    }
+    at_state = at_statTranInit;
 }
