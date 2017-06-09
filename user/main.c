@@ -18,7 +18,7 @@ void master()
     case RF_TX_DONE:
         //RFLRState = RFLR_STATE_RX_INIT;
       //delay_ms(500);
-        SX1278SetTxPacket(buffer,8);
+        //SX1278SetTxPacket(buffer,8);
         //printf("tx time:%ld\n",TxPacketTime);
         //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
         break;
@@ -77,7 +77,7 @@ void main(void)
     //SX1278SetTxPacket(buf,8);
     if(masterOn == 1)
     {
-        SX1278SetTxPacket(buffer,8);
+        //SX1278SetTxPacket(buffer,8);
     }
     else
     {

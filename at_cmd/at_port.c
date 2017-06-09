@@ -69,7 +69,7 @@ void at_recv_event(char temp)
             LoRaPacket.source.val = LoRaAddr;
             LoRaPacket.destination.val = DestAddr;
             LoRaPacket.data = (uint8_t *)at_cmdLine;
-            SX1278SetTxPacket1(&LoRaPacket);
+            SX1278SetTxPacket(&LoRaPacket);
             uart1_write_string("END\r\n");
             at_state = at_statIdle;
             count = 0;

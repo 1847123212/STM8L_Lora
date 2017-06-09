@@ -80,8 +80,7 @@ void SX1278SetRFPower( int8_t power );
 
 void SX1278TxMode() ;
 void SX1278Send(uint8_t* pBuffer,uint8_t len);
-void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len);
-void SX1278SetTxPacket1(Packet_t* packet);
+void SX1278SetTxPacket(Packet_t* packet);
 
 void SX1278RxMode(bool RxSingleOn);
 void SX1278GetRxPacket( void *buffer, uint8_t *size );

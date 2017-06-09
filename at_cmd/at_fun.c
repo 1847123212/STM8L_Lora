@@ -395,38 +395,7 @@ void at_CmdRxMode(char *pPara)
     at_backOk;
     at_state = at_statIdle;
 }
-void at_CmdTxPacket(char *pPara)
-{
-    uint8_t len = 0;
-    char *p = pPara;
-    if(*pPara++ == '=')
-    {
-        while(*p++ != '\n')
-        {
-            len++;
-        }
-        len -=2;//É¾³ý\r\n
-        if(SX1278GetRFState() != RFLR_STATE_TX_RUNNING)
-        {
-            LoRaPacket.source.val = LoRaAddr;
-            LoRaPacket.destination.val = DestAddr;
-            LoRaPacket.data = (uint8_t *)pPara;
-            LoRaPacket.len = len+4;
-            SX1278SetTxPacket1(&LoRaPacket);
-            at_backOk;
-        }
-        else
-        {
-            at_backErrorCode(AT_ERR_RF_BUSY);
-        }
 
-    }
-    else
-    {
-        at_backErrorCode(AT_ERR_SYMBLE);
-    }
-    at_state = at_statIdle;
-}
 void at_CmdAddr(char *pPara)
 {
     uint8_t buf[8];

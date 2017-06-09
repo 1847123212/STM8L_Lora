@@ -14,7 +14,6 @@ at_funcationType at_fun[at_cmdNum]={
 {"+REG",        4,  at_CmdReg,      },
 #endif
 {"+RX",         3,  at_CmdRxMode,   },
-{"+TX",         3,  at_CmdTxPacket, },
 {"+VER",        4,  at_CmdVersion,  },
 {"+PB0",        4,  at_CmdPB0,      },
 {"+PC4",        4,  at_CmdPC4,      },

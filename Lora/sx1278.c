@@ -279,23 +279,8 @@ void SX1278Send(uint8_t* pBuffer,uint8_t len)
   SX1278WriteBuffer(SX1278_REG_FIFO, pBuffer, len);
   SX1278SetOpMode(SX1278_TX);
 }
-void SX1278SetTxPacket(uint8_t* pBuffer,uint8_t len)
-{
-    uint8_t *p = RFBuffer;
-    if(LoRaSettings.ImplicitHeaderOn == TRUE && LoRaSettings.PayloadLength < len)
-    {
-        TxPacketSize = LoRaSettings.PayloadLength;
-    }
-    else
-    {
-        TxPacketSize = len ;
-    }
-    *p++ =(uint8_t)((LoRaAddr&0xff00)>>8);
-    *p++ =(LoRaAddr&0x00ff);
-    memcpy( ( void * )(RFBuffer + 2), pBuffer, ( size_t )(TxPacketSize + 2) ); 
-    RFLRState = RFLR_STATE_TX_INIT;
-}
-void SX1278SetTxPacket1(Packet_t* packet)
+
+void SX1278SetTxPacket(Packet_t* packet)
 {
     uint8_t *p = RFBuffer;
     if(LoRaSettings.ImplicitHeaderOn == TRUE && LoRaSettings.PayloadLength < packet->len)
