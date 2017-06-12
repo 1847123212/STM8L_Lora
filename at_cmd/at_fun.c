@@ -318,6 +318,7 @@ void at_CmdConfig(char *pPara)
         LoRaSettings.RxPacketTimeout = getPara(&pPara,10);
         LoRaSettings.PayloadLength = getPara(&pPara,10);
         LoRaSettings.PreambleLength = getPara(&pPara,10);
+        SaveConfig();
         SX1278Init();
         SX1278SetRFState(RFLR_STATE_RX_INIT);
         at_backOk;
@@ -349,6 +350,9 @@ void at_CmdConfig(char *pPara)
         len = digital2HexString(LoRaSettings.RxSingleOn,buf);
         uart1_write((uint8_t*)buf,len);
         uart1_write_string(",");
+        len = digital2HexString(LoRaSettings.FreqHopOn,buf);
+        uart1_write((uint8_t*)buf,len);
+        uart1_write_string(",");
         len = digital2HexString(LoRaSettings.HopPeriod,buf);
         uart1_write((uint8_t*)buf,len);
         uart1_write_string(",");
@@ -363,7 +367,7 @@ void at_CmdConfig(char *pPara)
         uart1_write_string("\r\n");
         at_backOk;
 #else
-        at_backErr;
+        at_backErrorCode(AT_ERR_NONE);
 #endif
         
         
@@ -412,6 +416,7 @@ void at_CmdAddr(char *pPara)
         LoRaAddr |= (C2D(*pPara++) ) << 0;
         */  
         LoRaAddr = getPara(&pPara,16);
+        SaveConfig();
         at_backOk;
     }
     else if(*pPara == '?')
@@ -440,6 +445,7 @@ void at_CmdSetDestAddr(char *pPara)
     if(*pPara == '=')
     {
         DestAddr = getPara(&pPara,16);
+        SaveConfig();
         at_backOk;
     }
     else if(*pPara == '?')
@@ -468,17 +474,28 @@ void at_CmdSend(char *pPara)
         if(SX1278GetRFState() != RFLR_STATE_TX_RUNNING)
         {
             LoRaPacket.len = getPara(&pPara,10)+4;
-            at_backOk;
-            uart1_write_string(">");
+            if(LoRaPacket.len > 4 && LoRaPacket.len < 255)
+            {
+                at_backOk;
+                uart1_write_string(">");
+                at_state = at_statTranInit;
+                return;
+            }
+            else
+            {
+                at_backErrorCode(AT_ERR_PARA);
+            }
         }
         else
         {
             at_backErrorCode(AT_ERR_RF_BUSY);
+
         }
     }
     else
     {
         at_backErrorCode(AT_ERR_SYMBLE);
     }
-    at_state = at_statTranInit;
+    at_state = at_statIdle;
+
 }

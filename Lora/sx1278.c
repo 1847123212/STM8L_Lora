@@ -23,7 +23,8 @@ uint32_t RxTxPacketTime = 0;
 static int8_t RxPacketSnrEstimate;
 float RxPacketRssiValue;
 
-uint16_t LoRaAddr,DestAddr;
+uint16_t LoRaAddr = 0xffff;
+uint16_t DestAddr = 0xffff;
 
 Packet_t LoRaPacket;
 // Default settings
@@ -46,6 +47,7 @@ tLoRaSettings LoRaSettings =
     4,                  //PreambleLength(4-x)
 };
 
+
 /*!
  * RF state machine variable
  */
@@ -64,13 +66,28 @@ static uint8_t RxPacketSize = 0;
 
 
 static uint8_t TxPacketSize = 0;
-void SaveConfig()
+uint8_t SaveConfig()
 {
-    EEPROM_Write(0,(uint8_t *)&LoRaSettings,sizeof(LoRaSettings));
+    uint8_t flag=0x5a;
+    EEPROM_Write(0, (uint8_t *)&flag,1);
+    EEPROM_Write(64,(uint8_t *)&LoRaAddr,sizeof(LoRaAddr));
+    EEPROM_Write(68,(uint8_t *)&DestAddr,sizeof(DestAddr));
+    EEPROM_Write(128, (uint8_t *)&LoRaSettings,sizeof(LoRaSettings));
+    return 1;
 }
-void LoadConfig()
+uint8_t LoadConfig()
 {
-    EEPROM_Read(0,(uint8_t *)&LoRaSettings,sizeof(LoRaSettings));
+    uint8_t flag=0;
+    EEPROM_Read(0,&flag,1);
+    if(0x5a == flag)
+    {
+        EEPROM_Read(64,(uint8_t *)&LoRaAddr,sizeof(LoRaAddr));
+        EEPROM_Read(68,(uint8_t *)&DestAddr,sizeof(DestAddr));
+        EEPROM_Read(128, (uint8_t *)&LoRaSettings,sizeof(LoRaSettings));
+        return 1;
+    }
+    else
+        return 0;
 }
 
 //1,¸´Î»Òý½Å¸´Î»
@@ -85,7 +102,14 @@ void SX1278Init()
     uint16_t temp16;
     SX1278InitIo( );
     SX1278Reset();
-    //LoadConfig();
+    if(LoadConfig())
+    {
+    
+    }
+    else
+    {
+        SaveConfig();
+    }
   
     SX1278SetOpMode( SX1278_SLEEP );
   
@@ -172,7 +196,8 @@ void SX1278Init()
   
     LORA_DBG("IRQ:0x%02x\n",SX1278Read(SX1278_REG_PREAMBLE_MSB));
     LORA_DBG("IRQ:0x%02x\n",SX1278Read(SX1278_REG_PREAMBLE_LSB));
-    
+    SX1278SetRFState(RFLR_STATE_RX_INIT);
+
 }
 
 

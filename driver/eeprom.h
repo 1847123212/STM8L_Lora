@@ -3,7 +3,6 @@
 #include "ebox_core.h"
 
 #define EEPROM_STARTADDR 0x1000  
-uint8_t EEPROM_Read(uint16_t Addr,uint8_t *RxBuffer,uint8_t Length);
-uint8_t EEPROM_Write(uint16_t Addr,uint8_t *RxBuffer,uint8_t Lenth);
-
+uint8_t EEPROM_Read(uint16_t Addr,uint8_t *RxBuffer,int Length);
+uint8_t EEPROM_Write(uint16_t Addr,uint8_t *RxBuffer,int Lenth);
 #endif 

@@ -89,7 +89,7 @@ void SX1278ForwardPacket();
 void SX1278SetRFState( uint8_t state );
 uint8_t SX1278GetRFState();
 uint8_t SX1278Process( void );
-void SaveConfig();
-void LoadConfig();
+uint8_t SaveConfig();
+uint8_t LoadConfig();
 
 #endif

@@ -6,7 +6,8 @@
 #define AT_ERR_CMD      "ERR:CMD\r\n"
 #define AT_ERR_RF_BUSY  "ERR:RF_BUSY\r\n"
 #define AT_ERR_SYMBLE   "ERR:SYMBLE\r\n"
-#define AT_ERR_PARA     "ERR:SYMBLE\r\n"
+#define AT_ERR_PARA     "ERR:PARA\r\n"
+#define AT_ERR_NONE     "ERR:NONE\r\n"
 
 #define at_backOk       uart1_write_string("OK\r\n")
 #define at_backErr      uart1_write_string("ERR\r\n")
