@@ -96,7 +96,19 @@ void at_CmdState(char *pPara)
 }
 void at_CmdSleep(char *pPara)
 {
-    at_backOk;
+    if(*pPara == '=')
+    {
+        pPara++;
+        if(*pPara == '1')
+            SX1278SetRFState(RFLR_STATE_IDLE);
+        else
+            SX1278SetRFState(RFLR_STATE_RX_INIT);
+        at_backOk;
+    }
+    else
+    {
+        at_backErrorCode(AT_ERR_SYMBLE);
+    }
     at_state = at_statIdle;
 }
 void at_CmdVersion(char *pPara)
@@ -137,7 +149,7 @@ void at_CmdReg(char *pPara)
     }
     else
     {
-        at_backErrorCode(AT_SYMBLE);
+        at_backErrorCode(AT_ERR_SYMBLE);
     }
     at_state = at_statIdle;
     

@@ -5,7 +5,7 @@
 #include "at_cmd.h"
 #include "at_port.h"
 
-const uint8_t info[]="MODULE:XLoRa-01\r\nVendor:eBox&Widora\r\nVersion:V0.1\r\nWeb:www.widora.org\r\n";
+const uint8_t info[]="MODULE:XLoRa-01(V0.1)\r\nVendor:eBox&Widora\r\n";
 
 void main(void)
 {
@@ -19,7 +19,6 @@ void main(void)
                 USART_StopBits_1,
                 USART_Parity_No,
                 (USART_Mode_TypeDef)(USART_Mode_Tx | USART_Mode_Rx));
-    uart1_write_string("a");
     uart1_write_cstring(info);
     SX1278Init();
 

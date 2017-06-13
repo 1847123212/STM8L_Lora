@@ -27,7 +27,6 @@ void at_recv_event(char temp)
             pCmdLine = at_cmdLine;
             atHead[1] = 0x00;
         }
-
       break;
     case at_statRecving: //push receive data to cmd line
       *pCmdLine = temp;

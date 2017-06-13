@@ -1,7 +1,7 @@
 #include "sx1278.h"
 #include "eeprom.h"
 #include "misc.h"
-
+#define RSSI_DEBUG 0
 
 #define XTAL_FREQ               26000000
 #define FREQ_STEP               49.59106
@@ -440,10 +440,14 @@ uint8_t SX1278GetRFState()
 {
     return RFLRState;
 }
+
 uint8_t SX1278Process( void )
 {
     uint32_t LastRxTxTime = 0;
     uint8_t result = RF_BUSY;
+    uint8_t rssi;
+    int temp;
+    uint8_t buf[10];
     switch( RFLRState )
     {
     case RFLR_STATE_IDLE:
@@ -533,7 +537,7 @@ uint8_t SX1278Process( void )
         
         {
             uint8_t rxSnrEstimate;
-            rxSnrEstimate = SX1278Read( SX1278_REG_PKT_SNR_VALUE );
+            rxSnrEstimate = (uint8_t)SX1278Read( SX1278_REG_PKT_SNR_VALUE );
             if( rxSnrEstimate & 0x80 ) // The SNR sign bit is 1
             {
                 // Invert and divide by 4
@@ -547,16 +551,26 @@ uint8_t SX1278Process( void )
             }
         }
         
-        uint8_t rssi = SX1278Read( SX1278_REG_RSSI_VALUE );
+        rssi = SX1278Read( SX1278_REG_PKT_RSSI_VALUE );
         if( RxPacketSnrEstimate < 0 )
         {
            RxPacketRssiValue = RSSI_OFFSET_LF +  rssi  + RxPacketSnrEstimate;
         }
         else
         {
-            RxPacketRssiValue = RSSI_OFFSET_LF + rssi + rssi>>4;
+            RxPacketRssiValue = RSSI_OFFSET_LF + rssi + (rssi>>4);
         }
             
+#if RSSI_DEBUG
+        temp = -RxPacketRssiValue;
+        buf[0] = '-';
+        buf[1] = temp/100 + 0x30;
+        buf[2] = temp/10%10 + 0x30;
+        buf[3] = temp%10 + 0x30;
+        buf[4] = '\r';
+        buf[5] = '\n';
+        uart1_write(buf,6);
+#endif
         if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
         {
             SX1278Write( SX1278_REG_FIFO_ADDR_PTR, SX1278_FIFO_RX_BASE_ADDR_MAX );
