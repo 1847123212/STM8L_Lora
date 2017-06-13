@@ -66,7 +66,7 @@ typedef struct
 }Packet_t;
 
 extern tLoRaSettings LoRaSettings;
-extern float RxPacketRssiValue;
+extern int RxPacketRssiValue;
 extern uint16_t LoRaAddr,DestAddr;
 extern Packet_t LoRaPacket;
 

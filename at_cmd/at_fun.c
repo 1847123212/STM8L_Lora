@@ -388,9 +388,25 @@ void at_CmdSaveConfig(char *pPara)
 }
 void at_CmdGetRssi(char *pPara)
 {
-    uart1_write_string("1");
-    RxPacketRssiValue;
-    at_backOk;
+  
+    uint8_t buf[6];
+    int temp;
+    if(*pPara == '?')
+    {
+        temp = -RxPacketRssiValue;
+        buf[0] = '-';
+        buf[1] = temp/100 + 0x30;
+        buf[2] = temp/10%10 + 0x30;
+        buf[3] = temp%10 + 0x30;
+        buf[4] = '\r';
+        buf[5] = '\n';
+        uart1_write(buf,6);
+        at_backOk;
+    }
+    else
+    {
+        at_backErrorCode(AT_ERR_SYMBLE);
+    }
     at_state = at_statIdle;
 }
 void at_CmdRxMode(char *pPara)

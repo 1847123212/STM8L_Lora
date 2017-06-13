@@ -9,8 +9,8 @@
 /*!
  * Constant values need to compute the RSSI value
  */
-#define RSSI_OFFSET_LF                              -164.0
-#define RSSI_OFFSET_HF                              -157.0
+#define RSSI_OFFSET_LF                              -164
+#define RSSI_OFFSET_HF                              -157
 
 /*!
  * Local RF buffer for communication support
@@ -21,7 +21,7 @@ uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 uint32_t RxTxPacketTime = 0;
 static int8_t RxPacketSnrEstimate;
-float RxPacketRssiValue;
+int RxPacketRssiValue;
 
 uint16_t LoRaAddr = 0xffff;
 uint16_t DestAddr = 0xffff;
@@ -530,7 +530,7 @@ uint8_t SX1278Process( void )
             SX1278ClearIRQFlags(SX1278_CLEAR_IRQ_FLAG_RX_DONE);
 
         }
-        //不使用此功能
+        
         {
             uint8_t rxSnrEstimate;
             rxSnrEstimate = SX1278Read( SX1278_REG_PKT_SNR_VALUE );
@@ -547,13 +547,14 @@ uint8_t SX1278Process( void )
             }
         }
         
+        uint8_t rssi = SX1278Read( SX1278_REG_RSSI_VALUE );
         if( RxPacketSnrEstimate < 0 )
         {
-            RxPacketRssiValue = RSSI_OFFSET_LF +  SX1278Read( SX1278_REG_RSSI_VALUE )  + RxPacketSnrEstimate;
+           RxPacketRssiValue = RSSI_OFFSET_LF +  rssi  + RxPacketSnrEstimate;
         }
         else
         {
-            RxPacketRssiValue = RSSI_OFFSET_LF + ( 1.0666 * SX1278Read( SX1278_REG_RSSI_VALUE ) );
+            RxPacketRssiValue = RSSI_OFFSET_LF + rssi + rssi>>4;
         }
             
         if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
