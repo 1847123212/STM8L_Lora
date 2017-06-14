@@ -327,8 +327,8 @@ void SX1278ForwardPacket()
 {
    // *size = RxPacketSize;
     //memcpy( ( void * )buffer, ( void * )RFBuffer, ( size_t )*size );
-    uint8_t buf[5] ;
-    uint8_t len;
+    uint8_t buf[8] ;
+    uint8_t len = RxPacketSize - 4;
     xuint16_t sourceAddr;
     xuint16_t destAddr;
     
@@ -339,14 +339,19 @@ void SX1278ForwardPacket()
     destAddr.byte[1] = *(RFBuffer+3);
     if(LoRaAddr == destAddr.val || destAddr.val == 0xffff || LoRaAddr == 0xffff)
     {
-        uart1_write_string("+LR:");
+        uart1_write_string("+LR,");
         buf[0] = D2C((sourceAddr.val&0xF000) >> 12);
         buf[1] = D2C((sourceAddr.val&0x0F00) >> 8);
         buf[2] = D2C((sourceAddr.val&0x00F0) >> 4);
         buf[3] = D2C((sourceAddr.val&0x000F) >> 0);
-        buf[4] = ':';
-        uart1_write((uint8_t*)buf,5);
-        uart1_write((RFBuffer+4),RxPacketSize-4);
+        buf[4] = ',';
+        buf[5] = D2C((len&0xF0) >> 4);
+        buf[6] = D2C((len&0x0F) >> 0);
+        buf[7] = ',';
+
+        uart1_write((uint8_t*)buf,8);
+        
+        uart1_write((RFBuffer+4),len);
         uart1_write_string("\r\n"); 
     }
     //*(RFBuffer+0) = ':';
@@ -446,8 +451,10 @@ uint8_t SX1278Process( void )
     uint32_t LastRxTxTime = 0;
     uint8_t result = RF_BUSY;
     uint8_t rssi;
+#if RSSI_DEBUG
     int temp;
     uint8_t buf[10];
+#endif
     switch( RFLRState )
     {
     case RFLR_STATE_IDLE:
