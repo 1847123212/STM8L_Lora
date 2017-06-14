@@ -4,6 +4,7 @@
 #include "at.h"
 
 #define AT_ERR_CMD      "ERR:CMD\r\n"
+#define AT_ERR_CPU_BUSY  "ERR:CPU_BUSY\r\n"
 #define AT_ERR_RF_BUSY  "ERR:RF_BUSY\r\n"
 #define AT_ERR_SYMBLE   "ERR:SYMBLE\r\n"
 #define AT_ERR_PARA     "ERR:PARA\r\n"

@@ -47,7 +47,7 @@ void at_recv_event(char temp)
       if(temp == '\n')
       {
 //      system_os_post(at_busyTaskPrio, 0, 1);
-        uart1_write_string("ERR\r\n");
+        at_backErrorCode(AT_ERR_CPU_BUSY);
       }
       break;
       
@@ -69,9 +69,9 @@ void at_recv_event(char temp)
             LoRaPacket.destination.val = DestAddr;
             LoRaPacket.data = (uint8_t *)at_cmdLine;
             SX1278SetTxPacket(&LoRaPacket);
-            uart1_write_string("END\r\n");
             at_state = at_statIdle;
             count = 0;
+            uart1_write_string("SENDING\r\n");
       }
       break;
       /*

@@ -45,6 +45,8 @@ void main(void)
             SX1278SetRFState(RFLR_STATE_RX_INIT);
             //uart1_write_string("TX done\n");
             //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
+            uart1_write_string("OK\r\n");
+
             break;
         default:
             break;
