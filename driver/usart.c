@@ -17,12 +17,17 @@ void usart_init(USART_TypeDef* USARTx,//123
   //CLK_PeripheralClockConfig((CLK_Peripheral_TypeDef)CLK_Peripheral_USART1, ENABLE);
     CLK->PCKENR1 |= CLK_PCKENR1_USART1;//
 
+    SYSCFG->RMPCR1 |= 0X20;//´®¿ÚÓ³ÉäPC5¡¢6
+    GPIOC->CR1 |= 0x20;
+    GPIOC->CR1 |= 0x40;
   /* Configure USART Tx as alternate function push-pull  (software pull up)*/
-  GPIO_ExternalPullUpConfig(GPIOC, GPIO_Pin_3, ENABLE);
+  //GPIO_ExternalPullUpConfig(GPIOC, GPIO_Pin_5, ENABLE);
+
 
   /* Configure USART Rx as alternate function push-pull  (software pull up)*/
-  GPIO_ExternalPullUpConfig(GPIOC, GPIO_Pin_2, ENABLE);
+  //GPIO_ExternalPullUpConfig(GPIOC, GPIO_Pin_6, ENABLE);
 
+  
   /* USART configuration 
   USART_Init(USARTx, 
              BaudRate,
