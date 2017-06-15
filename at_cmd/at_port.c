@@ -9,13 +9,11 @@ at_stateType  at_state;
  uint8_t at_cmdLine[at_cmdLenMax];
 //uint8_t at_dataLine[at_dataLenMax];/////
 //uint8_t *pDataLine;
-
 void at_recv_event(char temp)
 {
     static uint8_t atHead[2];
     static uint8_t *pCmdLine;
     static uint16_t count = 0;
-
     switch(at_state)
     {
     case at_statIdle:
@@ -37,7 +35,7 @@ void at_recv_event(char temp)
         at_state = at_statProcess;
 
       }
-      else if(pCmdLine >= &at_cmdLine[at_cmdLenMax - 1])
+      else if(pCmdLine >= &at_cmdLine[100])
       {
         at_state = at_statIdle;
       }
