@@ -169,6 +169,7 @@ void at_CmdPB0(char *pPara)
             GPIOB->ODR &= (uint8_t)(~GPIO_Pin_0);
         else
             GPIOB->ODR |= GPIO_Pin_0;
+        at_state = at_statIdle;
         at_backOk;
     }
     else if(*pPara == '?')
@@ -183,13 +184,14 @@ void at_CmdPB0(char *pPara)
         else
             uart1_write_string("0\r\n");
 
+        at_state = at_statIdle;
         at_backOk;
     }
     else
     {
+        at_state = at_statIdle;
         at_backErrorCode(AT_ERR_SYMBLE);
     }
-    at_state = at_statIdle;
 
 }
 void at_CmdPC4(char *pPara)

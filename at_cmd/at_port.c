@@ -4,7 +4,7 @@
 #include "sx1278.h"
 #define at_cmdLenMax 256
 
-at_stateType  at_state;
+at_stateType  at_state = at_statIdle;
 
  uint8_t at_cmdLine[at_cmdLenMax];
 //uint8_t at_dataLine[at_dataLenMax];/////

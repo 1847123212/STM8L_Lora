@@ -94,24 +94,31 @@ void uart1_write(uint8_t *buf,uint16_t len)
         USART1->DR = *buf++;
         while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
     }
+
 }
 void uart1_write_string(uint8_t *buf)
 {
 
     while(*buf != '\0')
     {
+    disableInterrupts();
         USART1->DR = *buf++;
         while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+    enableInterrupts();
     }
+
 }
 void uart1_write_cstring(const uint8_t *buf)
 {
 
     while(*buf != '\0')
     {
+    disableInterrupts();
         USART1->DR = *buf++;
         while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+    enableInterrupts();
     }
+
 }
 uint8_t uart1_read()
 {
