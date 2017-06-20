@@ -20,6 +20,7 @@ uint8_t RFBuffer[RF_BUFFER_SIZE];
 
 
 uint32_t RxTxPacketTime = 0;
+uint32_t LastRxTxTime = 0;
 static int8_t RxPacketSnrEstimate;
 int RxPacketRssiValue;
 
@@ -448,7 +449,6 @@ uint8_t SX1278GetRFState()
 
 uint8_t SX1278Process( void )
 {
-    uint32_t LastRxTxTime = 0;
     uint8_t result = RF_BUSY;
     uint8_t rssi;
 #if RSSI_DEBUG
@@ -621,7 +621,8 @@ uint8_t SX1278Process( void )
           break;
     case RFLR_STATE_RX_TIMEOUT:
         LORA_DBG("RX_TIMEOUT");
-        RFLRState = RFLR_STATE_RX_INIT;
+        //RFLRState = RFLR_STATE_RX_INIT;
+        RFLRState = RFLR_STATE_IDLE;
         result = RF_RX_TIMEOUT;
         break;
     case RFLR_STATE_TX_INIT:

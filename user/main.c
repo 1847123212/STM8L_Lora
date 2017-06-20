@@ -27,8 +27,9 @@ void main(void)
         switch( SX1278Process( ) )
         {
         case RF_RX_TIMEOUT:
+            uart1_write_string("TimeOut\r\n");
             //printf("rx time:%ld\n",RxPacketTime);
-            SX1278SetRFState(RFLR_STATE_RX_INIT);
+            //SX1278SetRFState(RFLR_STATE_RX_INIT);
             //gpio_pb0_toggle();
             break;
         case RF_RX_DONE:
