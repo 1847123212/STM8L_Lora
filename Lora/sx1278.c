@@ -447,6 +447,7 @@ uint8_t SX1278GetRFState()
     return RFLRState;
 }
 
+
 uint8_t SX1278Process( void )
 {
     uint8_t result = RF_BUSY;

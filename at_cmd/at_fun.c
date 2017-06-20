@@ -3,6 +3,7 @@
 #include "at_cmd.h"
 #include "sx1278.h"
 #include "misc.h"
+#include "low_power.h"
 
 extern at_stateType  at_state;
 
@@ -100,7 +101,13 @@ void at_CmdSleep(char *pPara)
     {
         pPara++;
         if(*pPara == '1')
+        {
             SX1278SetRFState(RFLR_STATE_IDLE);
+            EnterHalt();
+            ExitHalt();
+            SX1278Init();
+
+        }
         else
             SX1278SetRFState(RFLR_STATE_RX_INIT);
         at_backOk;

@@ -4,7 +4,9 @@
 #include "sx1278.h"
 #include "at_cmd.h"
 #include "at_port.h"
+#include "low_power.h"
 
+uint8_t halt_mode = 0;
 const uint8_t info[]="MODULE:XLoRa-01(V0.1)\r\nVendor:eBox&Widora\r\n";
 
 void main(void)
@@ -26,6 +28,8 @@ void main(void)
     {
         switch( SX1278Process( ) )
         {
+        case RF_IDLE:
+            break;
         case RF_RX_TIMEOUT:
             uart1_write_string("TimeOut\r\n");
             //printf("rx time:%ld\n",RxPacketTime);

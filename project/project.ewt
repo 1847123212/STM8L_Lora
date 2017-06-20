@@ -46,6 +46,9 @@
       <name>$PROJ_DIR$\..\driver\gpio.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\user\low_power.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\driver\timer.c</name>
     </file>
     <file>

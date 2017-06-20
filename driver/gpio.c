@@ -31,11 +31,12 @@ void gpio_pb0_toggle()
 
 void gpio_pc4_init()
 {
-    GPIO_Init(GPIOC,GPIO_Pin_4,GPIO_Mode_Out_PP_Low_Fast);
+    //GPIO_Init(GPIOC,GPIO_Pin_4,GPIO_Mode_Out_PP_Low_Fast);
 }
 
 void gpio_pc4_write(uint8_t GPIO_BitVal)
 {
+    /*
     GPIO_Init(GPIOC,GPIO_Pin_4,GPIO_Mode_Out_PP_Low_Fast);  
     if (GPIO_BitVal != RESET)
     {
@@ -45,11 +46,13 @@ void gpio_pc4_write(uint8_t GPIO_BitVal)
     {
         GPIOC->ODR &= (uint8_t)(~GPIO_Pin_4);
     }
+    */
 }
 void gpio_pc4_toggle()
 {
-    //GPIO_ToggleBits(GPIOC,GPIO_Pin_4);
+   /* //GPIO_ToggleBits(GPIOC,GPIO_Pin_4);
     GPIOC->ODR ^= GPIO_Pin_4;
+    */
 
 }
 void gpio_pd0_init()

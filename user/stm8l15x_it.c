@@ -204,11 +204,19 @@ INTERRUPT_HANDLER(EXTI3_IRQHandler, 11)
   * @param  None
   * @retval None
   */
+extern void ExitHalt(void);
+extern uint8_t halt_mode;
+
 INTERRUPT_HANDLER(EXTI4_IRQHandler, 12)
 {
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+
+    GPIO_Init(GPIOC, GPIO_Pin_4, GPIO_Mode_In_PU_No_IT);
+    EXTI->SR1=EXTI->SR1 | 0x10;
+
+  //  disableInterrupts();
 }
 
 /**
