@@ -16,7 +16,7 @@ at_funcationType at_fun[at_cmdNum]={
 {"+RX",         3,  at_CmdRxMode,   },
 {"+VER",        4,  at_CmdVersion,  },
 {"+PB0",        4,  at_CmdPB0,      },
-{"+PC4",        4,  at_CmdPC4,      },
+//{"+PC4",        4,  at_CmdPC4,      },
 {"+PD0",        4,  at_CmdPD0,      },
 {"+PWM1",       5,  at_CmdPWM1,     },
 {"+PWM2",       5,  at_CmdPWM2,     },
@@ -25,6 +25,8 @@ at_funcationType at_fun[at_cmdNum]={
 {"+RSSI",       5,  at_CmdGetRssi,  },
 {"+DEST",       5,  at_CmdSetDestAddr,  },
 {"+SEND",       5,  at_CmdSend,  },
+{"+RX",         3,  at_CmdRx,  },
+{"+IDLE",       5,  at_CmdIdle,  },
 
 
 

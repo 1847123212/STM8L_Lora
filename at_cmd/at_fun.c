@@ -103,14 +103,20 @@ void at_CmdSleep(char *pPara)
         if(*pPara == '1')
         {
             SX1278SetRFState(RFLR_STATE_IDLE);
+            //SX1278Reset();
+            SX1278SetOpMode( SX1278_SLEEP );
+            at_backOk;
             EnterHalt();
             ExitHalt();
-            SX1278Init();
+            //SX1278Init();
 
         }
         else
+        {
             SX1278SetRFState(RFLR_STATE_RX_INIT);
-        at_backOk;
+            at_backOk;
+
+        }
     }
     else
     {
@@ -537,4 +543,16 @@ void at_CmdSend(char *pPara)
     }
     at_state = at_statIdle;
 
+}
+void at_CmdRx(char *pPara)
+{
+    SX1278SetRFState(RFLR_STATE_RX_INIT);
+    at_backOk;
+    at_state = at_statIdle;
+}
+void at_CmdIdle(char *pPara)
+{
+    SX1278SetRFState(RFLR_STATE_IDLE);
+    at_backOk;
+    at_state = at_statIdle;
 }

@@ -30,5 +30,7 @@ void at_CmdGetRssi(char *pPara);
 void at_CmdAddr(char *pPara);
 void at_CmdSetDestAddr(char *pPara);
 void at_CmdSend(char *pPara);
+void at_CmdRx(char *pPara);
+void at_CmdIdle(char *pPara);
 
 #endif

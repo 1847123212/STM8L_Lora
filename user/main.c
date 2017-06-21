@@ -23,6 +23,7 @@ void main(void)
                 (USART_Mode_TypeDef)(USART_Mode_Tx | USART_Mode_Rx));
     uart1_write_cstring(info);
     SX1278Init();
+   
 
     while (1)
     {
