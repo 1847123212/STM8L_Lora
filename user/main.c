@@ -42,13 +42,13 @@ void main(void)
             //uart1_write_string("+IPD");
             //uart1_write(buffer,bufferLength);
             
-            SX1278SetRFState(RFLR_STATE_RX_INIT);
+            //SX1278SetRFState(RFLR_STATE_RX_INIT);
             //SX1278SetTxPacket(buf,8);
            // gpio_pb0_toggle();
             break;
         case RF_TX_DONE:
             //RFLRState = RFLR_STATE_RX_INIT;
-            SX1278SetRFState(RFLR_STATE_RX_INIT);
+            //SX1278SetRFState(RFLR_STATE_RX_INIT);
             //uart1_write_string("TX done\n");
             //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
             uart1_write_string("OK\r\n");

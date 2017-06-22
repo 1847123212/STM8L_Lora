@@ -347,7 +347,6 @@ void at_CmdConfig(char *pPara)
         LoRaSettings.PreambleLength = getPara(&pPara,10);
         SaveConfig();
         SX1278Init();
-        SX1278SetRFState(RFLR_STATE_RX_INIT);
         at_state = at_statIdle;
         at_backOk;
 

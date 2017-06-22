@@ -527,7 +527,7 @@ uint8_t SX1278Process( void )
             LORA_DBG("IRQ4:0x%02x\n",SX1278Read(SX1278_REG_IRQ_FLAGS));
             if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
             {
-                RFLRState = RFLR_STATE_RX_INIT;
+                RFLRState = RFLR_STATE_IDLE;
             }
             else
             {
@@ -612,7 +612,7 @@ uint8_t SX1278Process( void )
         }
         if( LoRaSettings.RxSingleOn == TRUE ) // Rx single mode
         {
-            RFLRState = RFLR_STATE_RX_INIT;
+            RFLRState = RFLR_STATE_IDLE;
         }
         else // Rx continuous mode
         {
@@ -662,9 +662,11 @@ uint8_t SX1278Process( void )
         break;
     case RFLR_STATE_TX_DONE:
         LORA_DBG("RF-TX-DNOE");
-        // optimize the power consumption by switching off the transmitter as soon as the packet has been sent
-        SX1278SetOpMode( SX1278_STANDBY );
-        RFLRState = RFLR_STATE_IDLE;
+        if(LoRaSettings.RxSingleOn == TRUE )
+            RFLRState = RFLR_STATE_IDLE;
+        else
+            RFLRState = RFLR_STATE_RX_INIT;
+
         result = RF_TX_DONE;
         break;
     /*不使用发送超时
