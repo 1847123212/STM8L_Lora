@@ -20,8 +20,8 @@ void GPIO_LowPower_Config(void)
 // Port ABCDEFG in output push-pull 0 
 
    //GPIO_Init(GPIOA, GPIO_Pin_0|GPIO_Pin_1,GPIO_Mode_In_PU_No_IT);
-   GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_In_PU_No_IT);
-   GPIO_Init(GPIOD, GPIO_Pin_0, GPIO_Mode_In_PU_No_IT);
+   GPIO_Init(GPIOB, GPIO_Pin_0, GPIO_Mode_In_FL_No_IT);
+   GPIO_Init(GPIOD, GPIO_Pin_0, GPIO_Mode_In_FL_No_IT);
    GPIO_Init(GPIOC, GPIO_Pin_0|GPIO_Pin_1, GPIO_Mode_In_PU_No_IT);
 
   //设置S1,S2为中断唤醒引脚，下降沿有效
