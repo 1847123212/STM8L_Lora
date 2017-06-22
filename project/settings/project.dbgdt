@@ -68,7 +68,7 @@
           
           
           
-        <item>at_cmdLine</item><item>LoRaPacket</item><item>RFBuffer</item><item>at_cmdLine</item><item>buffer</item><item>buffer1</item><item>LoRaSets</item><item>LoRaSets</item><item>LoRaAddr</item><item>DestAddr</item><item>rssi</item><item>size</item><item>LastRxTxTime</item><item>temp</item><item>xx</item><item></item></expressions>
+        <item>at_cmdLine</item><item>LoRaPacket</item><item>RFBuffer</item><item>at_cmdLine</item><item>buffer</item><item>buffer1</item><item>LoRaSets</item><item>LoRaSets</item><item>LoRaAddr</item><item>DestAddr</item><item>rssi</item><item>size</item><item>LastRxTxTime</item><item>temp</item><item>xx</item><item/></expressions>
         <col-names>
           
           

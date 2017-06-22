@@ -7,7 +7,7 @@
 #include "low_power.h"
 
 uint8_t halt_mode = 0;
-const uint8_t info[]="MODULE:XLoRa-01(V0.1)\r\nVendor:eBox&Widora\r\n";
+const uint8_t info[]="MODULE:Ting-01M(V0.2)\r\nVendor:eBox&Widora\r\n";
 
 void main(void)
 {
