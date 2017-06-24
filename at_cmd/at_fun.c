@@ -345,7 +345,6 @@ void at_CmdConfig(char *pPara)
         LoRaSettings.RxPacketTimeout = getPara(&pPara,10);
         LoRaSettings.PayloadLength = getPara(&pPara,10);
         LoRaSettings.PreambleLength = getPara(&pPara,10);
-        SaveConfig();
         SX1278Init();
         at_state = at_statIdle;
         at_backOk;
@@ -460,7 +459,6 @@ void at_CmdAddr(char *pPara)
         LoRaAddr |= (C2D(*pPara++) ) << 0;
         */  
         LoRaAddr = getPara(&pPara,16);
-        SaveConfig();
         at_backOk;
     }
     else if(*pPara == '?')
@@ -489,7 +487,6 @@ void at_CmdSetDestAddr(char *pPara)
     if(*pPara == '=')
     {
         DestAddr = getPara(&pPara,16);
-        SaveConfig();
         at_backOk;
     }
     else if(*pPara == '?')
@@ -521,7 +518,7 @@ void at_CmdSend(char *pPara)
             if(LoRaPacket.len > 4 && LoRaPacket.len < 255)
             {
                 at_backOk;
-                uart1_write_string(">");
+                uart1_write_string(">\r\n");
                 at_state = at_statTranInit;
                 return;
             }
