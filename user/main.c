@@ -22,6 +22,7 @@ void main(void)
                 USART_Parity_No,
                 (USART_Mode_TypeDef)(USART_Mode_Tx | USART_Mode_Rx));
     uart1_write_cstring(info);
+    LoadConfig();
     SX1278Init();
    
 

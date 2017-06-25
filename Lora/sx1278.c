@@ -88,7 +88,10 @@ uint8_t LoadConfig()
         return 1;
     }
     else
+    {
+        SaveConfig();
         return 0;
+    }
 }
 
 //1,¸´Î»Òý½Å¸´Î»
@@ -103,14 +106,7 @@ void SX1278Init()
     uint16_t temp16;
     SX1278InitIo( );
     SX1278Reset();
-    if(LoadConfig())
-    {
-    
-    }
-    else
-    {
-        SaveConfig();
-    }
+
   
     SX1278SetOpMode( SX1278_SLEEP );
   
