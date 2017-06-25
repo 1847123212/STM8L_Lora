@@ -368,8 +368,7 @@ void at_CmdGetRssi(char *pPara)
 
 void at_CmdPB0(char *pPara)
 {
-    GPIO_ExternalPullUpConfig(GPIOB, GPIO_Pin_0, DISABLE);
-    TIM2->CR1 &= ~0X01;/*开启定时器*/
+    TIM2->CCER1 &= ~TIM_CCER1_CC1E;//输出使能
     CLK->PCKENR1 &= ~CLK_PCKENR1_TIM2;//关闭pwm输出
 
     if(*pPara == '=')
@@ -444,8 +443,7 @@ void at_CmdPC4(char *pPara)
 }
 void at_CmdPD0(char *pPara)
 {
-    GPIO_ExternalPullUpConfig(GPIOD, GPIO_Pin_0, DISABLE);
-    TIM3->CR1 &= ~0X01;/*开启定时器*/
+    TIM3->CCER1 &= ~TIM_CCER1_CC2E;//输出使能
     CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
     if(*pPara == '=')
     {
