@@ -9,12 +9,18 @@
 void at_CmdError();
 void at_CmdNull(char *pPara);
 void at_CmdReset(char *pPara);
+void at_CmdVersion(char *pPara);
 void at_CmdState(char *pPara);
 void at_CmdSleep(char *pPara);
-void at_CmdVersion(char *pPara);
-#if USE_REG
-void at_CmdReg(char *pPara);
-#endif
+void at_CmdIdle(char *pPara);
+
+void at_CmdConfig(char *pPara);
+void at_CmdAddr(char *pPara);
+void at_CmdDestAddr(char *pPara);
+void at_CmdSaveConfig(char *pPara);
+void at_CmdRxMode(char *pPara);
+void at_CmdSend(char *pPara);
+void at_CmdGetRssi(char *pPara);
 
 void at_CmdPB0(char *pPara);
 void at_CmdPC4(char *pPara);
@@ -22,15 +28,7 @@ void at_CmdPD0(char *pPara);
 void at_CmdPWM1(char *pPara);
 void at_CmdPWM2(char *pPara);
 
-void at_CmdConfig(char *pPara);
-void at_CmdRxMode(char *pPara);
-
-void at_CmdSaveConfig(char *pPara);
-void at_CmdGetRssi(char *pPara);
-void at_CmdAddr(char *pPara);
-void at_CmdSetDestAddr(char *pPara);
-void at_CmdSend(char *pPara);
-void at_CmdRx(char *pPara);
-void at_CmdIdle(char *pPara);
-
+#if USE_REG
+void at_CmdReg(char *pPara);
+#endif
 #endif

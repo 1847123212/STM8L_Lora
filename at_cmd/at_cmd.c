@@ -7,26 +7,25 @@ at_funcationType at_fun[at_cmdNum]={
   
 {NULL,          0,  at_CmdNull,     },
 {"+RST",        4,  at_CmdReset,    },
+{"+VER",        4,  at_CmdVersion,  },
 {"+STATE",      6,  at_CmdState,    },
 {"+SLEEP",      6,  at_CmdSleep,    },
+{"+IDLE",       5,  at_CmdIdle,     },
+{"+CFG",        4,  at_CmdConfig,   },
 {"+ADDR",       5,  at_CmdAddr,     },
-#if USE_REG
-{"+REG",        4,  at_CmdReg,      },
-#endif
+{"+DEST",       5,  at_CmdDestAddr, },
+{"+SAVE",       5,  at_CmdSaveConfig,   },
 {"+RX",         3,  at_CmdRxMode,   },
-{"+VER",        4,  at_CmdVersion,  },
+{"+SEND",       5,  at_CmdSend,     },
+{"+RSSI",       5,  at_CmdGetRssi,  },
 {"+PB0",        4,  at_CmdPB0,      },
 //{"+PC4",        4,  at_CmdPC4,      },
 {"+PD0",        4,  at_CmdPD0,      },
 {"+PWM1",       5,  at_CmdPWM1,     },
 {"+PWM2",       5,  at_CmdPWM2,     },
-{"+CFG",        4,  at_CmdConfig,   },
-{"+SAVE",       5,  at_CmdSaveConfig,   },
-{"+RSSI",       5,  at_CmdGetRssi,  },
-{"+DEST",       5,  at_CmdSetDestAddr,  },
-{"+SEND",       5,  at_CmdSend,  },
-{"+RX",         3,  at_CmdRx,  },
-{"+IDLE",       5,  at_CmdIdle,  },
+#if USE_REG
+{"+REG",        4,  at_CmdReg,      },
+#endif
 
 
 

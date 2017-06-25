@@ -9,7 +9,6 @@
 #define AT_ERR_RF_BUSY  "ERR:RF_BUSY\r\n"
 #define AT_ERR_SYMBLE   "ERR:SYMBLE\r\n"
 #define AT_ERR_PARA     "ERR:PARA\r\n"
-#define AT_ERR_NONE     "ERR:NONE\r\n"
 
 #define at_backHead     uart1_write_string("AT,")
 #define at_backOk       uart1_write_string("OK\r\n")

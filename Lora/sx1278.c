@@ -455,7 +455,6 @@ uint8_t SX1278Process( void )
     switch( RFLRState )
     {
     case RFLR_STATE_IDLE:
-        SX1278SetOpMode( SX1278_SLEEP );
         result = RF_IDLE;
         break;
     case RFLR_STATE_RX_INIT:
@@ -673,7 +672,9 @@ uint8_t SX1278Process( void )
         */
     /*≤ª π”√CAD*/
 
-    case RFLR_STATE_CAD_INIT: 
+    case RFLR_STATE_CAD_INIT:
+        //SX1276LoRaSetOpMode( RFLR_OPMODE_STANDBY );
+
         break;
     case RFLR_STATE_CAD_RUNNING:
         
