@@ -127,6 +127,7 @@ void at_CmdSleep(char *pPara)
 void at_CmdVersion(char *pPara)
 {
     uart1_write_string(VERSION);
+    uart1_write_string(",");
     at_backOk;
     at_state = at_statIdle;
 }
@@ -170,6 +171,8 @@ void at_CmdReg(char *pPara)
 #endif
 void at_CmdPB0(char *pPara)
 {
+    GPIO_ExternalPullUpConfig(GPIOB, GPIO_Pin_0, DISABLE);
+    TIM2->CR1 &= ~0X01;/*开启定时器*/
     CLK->PCKENR1 &= ~CLK_PCKENR1_TIM2;//关闭pwm输出
 
     if(*pPara == '=')
@@ -192,10 +195,10 @@ void at_CmdPB0(char *pPara)
         GPIOB->CR2 &= (uint8_t)(~(GPIO_Pin_0));//无中断,默认值
         if(GPIOB->IDR & GPIO_Pin_0)
         {
-            uart1_write_string("1\r\n");
+            uart1_write_string("1,");
         }
         else
-            uart1_write_string("0\r\n");
+            uart1_write_string("0,");
 
         at_state = at_statIdle;
         at_backOk;
@@ -230,10 +233,10 @@ void at_CmdPC4(char *pPara)
 
         if(GPIOC->IDR & GPIO_Pin_4)
         {
-            uart1_write_string("1\r\n");
+            uart1_write_string("1,");
         }
         else
-            uart1_write_string("0\r\n");
+            uart1_write_string("0,");
         at_backOk;
     }
     else
@@ -244,6 +247,8 @@ void at_CmdPC4(char *pPara)
 }
 void at_CmdPD0(char *pPara)
 {
+    GPIO_ExternalPullUpConfig(GPIOD, GPIO_Pin_0, DISABLE);
+    TIM3->CR1 &= ~0X01;/*开启定时器*/
     CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
     if(*pPara == '=')
     {
@@ -263,10 +268,10 @@ void at_CmdPD0(char *pPara)
         GPIOD->CR2 &= (uint8_t)(~(GPIO_Pin_0));//无中断,默认值
         if(GPIOD->IDR & GPIO_Pin_0)
         {
-            uart1_write_string("1\r\n");
+            uart1_write_string("1,");
         }
         else
-            uart1_write_string("0\r\n");
+            uart1_write_string("0,");
         at_backOk;
     }
     else
@@ -416,7 +421,7 @@ void at_CmdSaveConfig(char *pPara)
 void at_CmdGetRssi(char *pPara)
 {
   
-    uint8_t buf[6];
+    uint8_t buf[5];
     int temp;
     if(*pPara == '?')
     {
@@ -425,9 +430,8 @@ void at_CmdGetRssi(char *pPara)
         buf[1] = temp/100 + 0x30;
         buf[2] = temp/10%10 + 0x30;
         buf[3] = temp%10 + 0x30;
-        buf[4] = '\r';
-        buf[5] = '\n';
-        uart1_write(buf,6);
+        buf[4] = ',';
+        uart1_write(buf,5);
         at_backOk;
     }
     else
@@ -471,7 +475,7 @@ void at_CmdAddr(char *pPara)
         
         //len = digital2HexString(LoRaAddr,buf);
         uart1_write((uint8_t*)buf,4);
-        uart1_write_string("\r\n");
+        uart1_write_string(",");
         at_backOk;
     }
     else
@@ -499,7 +503,7 @@ void at_CmdSetDestAddr(char *pPara)
         
         //len = digital2HexString(LoRaAddr,buf);
         uart1_write((uint8_t*)buf,4);
-        uart1_write_string("\r\n");
+        uart1_write_string(",");
         at_backOk;
     }
     else
@@ -518,7 +522,6 @@ void at_CmdSend(char *pPara)
             if(LoRaPacket.len > 4 && LoRaPacket.len < 255)
             {
                 at_backOk;
-                uart1_write_string(">\r\n");
                 at_state = at_statTranInit;
                 return;
             }

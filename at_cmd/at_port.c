@@ -69,7 +69,7 @@ void at_recv_event(char temp)
             SX1278SetTxPacket(&LoRaPacket);
             at_state = at_statIdle;
             count = 0;
-            uart1_write_string("SENDING\r\n");
+            uart1_write_string("AT,SENDING\r\n");
       }
       break;
       /*

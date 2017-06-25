@@ -52,7 +52,7 @@ void ExitHalt(void)
     //SX1278InitIo( );
     enableInterrupts();
     
-    uart1_write_string("WakeUp\r\n");
+    uart1_write_string("AT,WakeUp\r\n");
 
    //  RestorePinSetting();
 

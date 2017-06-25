@@ -33,7 +33,7 @@ void main(void)
         case RF_IDLE:
             break;
         case RF_RX_TIMEOUT:
-            uart1_write_string("TimeOut\r\n");
+            uart1_write_string("AT,TimeOut\r\n");
             //printf("rx time:%ld\n",RxPacketTime);
             //SX1278SetRFState(RFLR_STATE_RX_INIT);
             //gpio_pb0_toggle();
@@ -52,7 +52,7 @@ void main(void)
             //SX1278SetRFState(RFLR_STATE_RX_INIT);
             //uart1_write_string("TX done\n");
             //SX1276LoRaSetRFState(RFLR_STATE_RX_INIT);
-            uart1_write_string("OK\r\n");
+            uart1_write_string("AT,SENDED\r\n");
 
             break;
         default:

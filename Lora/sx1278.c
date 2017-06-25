@@ -336,7 +336,7 @@ void SX1278ForwardPacket()
     destAddr.byte[1] = *(RFBuffer+3);
     if(LoRaAddr == destAddr.val || destAddr.val == 0xffff || LoRaAddr == 0xffff)
     {
-        uart1_write_string("+LR,");
+        uart1_write_string("LR,");
         buf[0] = D2C((sourceAddr.val&0xF000) >> 12);
         buf[1] = D2C((sourceAddr.val&0x0F00) >> 8);
         buf[2] = D2C((sourceAddr.val&0x00F0) >> 4);

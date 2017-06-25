@@ -99,9 +99,10 @@ void at_cmdProcess(uint8_t *pAtRcvData)
   {
   	cmdId = -1;
   }
+  at_backHead;
   if(cmdId != -1)
   {
-        pAtRcvData += at_fun[cmdId].at_cmdLen;
+      pAtRcvData += at_fun[cmdId].at_cmdLen;
         if(at_fun[cmdId].at_Cmd)
         {
             at_fun[cmdId].at_Cmd((char *)pAtRcvData);
