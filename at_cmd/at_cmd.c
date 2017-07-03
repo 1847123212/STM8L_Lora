@@ -21,7 +21,9 @@ at_funcationType at_fun[at_cmdNum]={
 {"+PB0",        4,  at_CmdPB0,      },
 //{"+PC4",        4,  at_CmdPC4,      },
 {"+PD0",        4,  at_CmdPD0,      },
+{"+ACK",        4,  at_CmdAck,      },
 {"+PWM1",       5,  at_CmdPWM1,     },
+{"+PWM2",       5,  at_CmdPWM2,     },
 {"+PWM2",       5,  at_CmdPWM2,     },
 #if USE_REG
 {"+REG",        4,  at_CmdReg,      },

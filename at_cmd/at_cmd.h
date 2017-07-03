@@ -2,7 +2,7 @@
 #define __AT_CMD_H
 #include "ebox.h"
 #include "at.h"
-#define VERSION "V0.3"
+#define VERSION "V0.4"
 
 #define AT_ERR_CMD      "ERR:CMD\r\n"
 #define AT_ERR_CPU_BUSY  "ERR:CPU_BUSY\r\n"

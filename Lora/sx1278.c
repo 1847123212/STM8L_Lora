@@ -56,7 +56,7 @@ uint8_t RFLRState = RFLR_STATE_IDLE;
 /*!
  * Rx management support variables
  */
-static uint8_t RxPacketSize = 0;
+uint8_t RxPacketSize = 0;
 //static int8_t RxPacketSnrEstimate;
 //static double RxPacketRssiValue;
 //static uint8_t RxGain = 1;
@@ -320,45 +320,7 @@ void SX1278SetTxPacket(Packet_t* packet)
     memcpy( ( void * )(RFBuffer + 4), packet->data, ( size_t )(TxPacketSize - 4 ) ); 
     RFLRState = RFLR_STATE_TX_INIT;
 }
-void SX1278ForwardPacket()
-{
-   // *size = RxPacketSize;
-    //memcpy( ( void * )buffer, ( void * )RFBuffer, ( size_t )*size );
-    uint8_t buf[8] ;
-    uint8_t len = RxPacketSize - 4;
-    xuint16_t sourceAddr;
-    xuint16_t destAddr;
-    
-    sourceAddr.byte[0] = *(RFBuffer+0);
-    sourceAddr.byte[1] = *(RFBuffer+1);
-    
-    destAddr.byte[0] = *(RFBuffer+2);
-    destAddr.byte[1] = *(RFBuffer+3);
-    if(LoRaAddr == destAddr.val || destAddr.val == 0xffff || LoRaAddr == 0xffff)
-    {
-        uart1_write_string("LR,");
-        buf[0] = D2C((sourceAddr.val&0xF000) >> 12);
-        buf[1] = D2C((sourceAddr.val&0x0F00) >> 8);
-        buf[2] = D2C((sourceAddr.val&0x00F0) >> 4);
-        buf[3] = D2C((sourceAddr.val&0x000F) >> 0);
-        buf[4] = ',';
-        buf[5] = D2C((len&0xF0) >> 4);
-        buf[6] = D2C((len&0x0F) >> 0);
-        buf[7] = ',';
 
-        uart1_write((uint8_t*)buf,8);
-        
-        uart1_write((RFBuffer+4),len);
-        uart1_write_string("\r\n"); 
-    }
-    //*(RFBuffer+0) = ':';
-    //*(RFBuffer+1) = ':';
-    //*(RFBuffer+2) = ':';
-    //*(RFBuffer+3) = ':';
-
-
-    RxPacketSize = 0;
-}
 void SX1278RxMode(bool RxSingleOn)
 {
   LORA_DBG("SX1278RxMode()");
@@ -613,8 +575,9 @@ uint8_t SX1278Process( void )
         {
             RFLRState = RFLR_STATE_RX_RUNNING;
         }
+
         result = RF_RX_DONE;
-          break;
+        break;
     case RFLR_STATE_RX_TIMEOUT:
         LORA_DBG("RX_TIMEOUT");
         //RFLRState = RFLR_STATE_RX_INIT;

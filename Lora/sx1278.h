@@ -175,7 +175,6 @@ void SX1278SetTxPacket(Packet_t* packet);
 
 void SX1278RxMode(bool RxSingleOn);
 void SX1278GetRxPacket( void *buffer, uint8_t *size );
-void SX1278ForwardPacket();
 
 void SX1278SetRFState( uint8_t state );
 uint8_t SX1278GetRFState();

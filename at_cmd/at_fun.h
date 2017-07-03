@@ -22,6 +22,7 @@ void at_CmdRxMode(char *pPara);
 void at_CmdSend(char *pPara);
 void at_CmdGetRssi(char *pPara);
 
+void at_CmdAck(char *pPara);
 void at_CmdPB0(char *pPara);
 void at_CmdPC4(char *pPara);
 void at_CmdPD0(char *pPara);

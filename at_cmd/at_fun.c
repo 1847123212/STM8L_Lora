@@ -363,8 +363,36 @@ void at_CmdGetRssi(char *pPara)
     }
     at_state = at_statIdle;
 }
+extern uint8_t ack_on;
+void at_CmdAck(char *pPara)
+{
 
+    if(*pPara == '=')
+    {
+        pPara++;
+        if(*pPara == '0')
+        {
+            ack_on = 0;
+        }
+        else
+        {
+            TIM3->CCER1 &= ~TIM_CCER1_CC2E;//输出使能
+            CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
+            GPIOD->DDR |= GPIO_Pin_0;//OUTPUT
+            GPIOD->CR1 |= GPIO_Pin_0;//PP
+            GPIOD->ODR &= (uint8_t)(~GPIO_Pin_0);
+            ack_on = 1;
+        }
+        at_state = at_statIdle;
+        at_backOk;
+    }
+    else
+    {
+        at_state = at_statIdle;
+        at_backErrorCode(AT_ERR_SYMBLE);
+    }
 
+}
 
 void at_CmdPB0(char *pPara)
 {
@@ -443,6 +471,7 @@ void at_CmdPC4(char *pPara)
 }
 void at_CmdPD0(char *pPara)
 {
+    ack_on = 0;//关闭Ack响应
     TIM3->CCER1 &= ~TIM_CCER1_CC2E;//输出使能
     CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
     if(*pPara == '=')
