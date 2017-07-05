@@ -30,6 +30,10 @@ void ForwardPacket()
     {
         if(ack_on == 1)
         {
+            TIM3->CCER1 &= ~TIM_CCER1_CC2E;//输出使能
+            CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
+            GPIOD->DDR |= GPIO_Pin_0;//OUTPUT
+            GPIOD->CR1 |= GPIO_Pin_0;//PP
             GPIOD->ODR |= GPIO_Pin_0;
             ack_on_time = millis();
         }

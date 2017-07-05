@@ -59,7 +59,7 @@ char D2C(
     uint8_t val	
 )
 {
-    if (val >= 0 && val <= 9)
+    if (val <= 9)
         return val + '0';
     if (val >= 10 && val <= 15)
         return  'A' + ( val - 10);
@@ -94,17 +94,11 @@ uint32_t getPara(char **pPara,uint8_t base)
     buf[i++] = '\0';
     return  ATOI32((char *)buf,base);
 }
+/*
 uint8_t digital2HexString(uint32_t val,uint8_t *buf)
 {
     uint8_t i ;
-    /*
-    if(val <= 0xff)
-    {
-       // for(i = 0; i < 2; i++)
-            buf[0] = D2C((val&0xf0)>>4);
-            buf[1] = D2C((val&0x0f)>>0);
-            i = 2;
-    }*/
+
     if(val <= 0xffff)
     {
         for(i = 0; i < 4; i++)
@@ -117,3 +111,4 @@ uint8_t digital2HexString(uint32_t val,uint8_t *buf)
     }
     return (i);
 }
+*/

@@ -11,6 +11,7 @@
  */
 #define RSSI_OFFSET_LF                              -164
 #define RSSI_OFFSET_HF                              -157
+extern uint8_t ack_on;
 
 /*!
  * Local RF buffer for communication support
@@ -71,6 +72,7 @@ uint8_t SaveConfig()
 {
     uint8_t flag=0x5a;
     EEPROM_Write(0, (uint8_t *)&flag,1);
+    EEPROM_Write(4,(uint8_t *)&ack_on,sizeof(ack_on));
     EEPROM_Write(64,(uint8_t *)&LoRaAddr,sizeof(LoRaAddr));
     EEPROM_Write(68,(uint8_t *)&DestAddr,sizeof(DestAddr));
     EEPROM_Write(128, (uint8_t *)&LoRaSettings,sizeof(LoRaSettings));
@@ -82,6 +84,7 @@ uint8_t LoadConfig()
     EEPROM_Read(0,&flag,1);
     if(0x5a == flag)
     {
+        EEPROM_Read(4,(uint8_t *)&ack_on,sizeof(ack_on));
         EEPROM_Read(64,(uint8_t *)&LoRaAddr,sizeof(LoRaAddr));
         EEPROM_Read(68,(uint8_t *)&DestAddr,sizeof(DestAddr));
         EEPROM_Read(128, (uint8_t *)&LoRaSettings,sizeof(LoRaSettings));

@@ -32,33 +32,32 @@ bool CheckPara(char *pPara)
 
 void at_CmdError()
 {
-    at_backErrorCode(AT_ERR_CMD);
+    at_back(AT_ERR_CMD_ID);
     at_state = at_statIdle;
 }
 void at_CmdNull(char *pPara)
 {
-    at_backOk;
+    at_back(AT_ERR_OK_ID);
     at_state = at_statIdle;
 }
 
 void at_CmdReset(char *pPara)
 {
-    at_backOk;
+    at_back(AT_ERR_OK_ID);
     at_state = at_statIdle;
     WWDG->CR |= 0x80;//WDGA=1
     WWDG->CR &= 0xbf;//T6置0
 }
 void at_CmdVersion(char *pPara)
 {
-    uart1_write_string(VERSION);
-    uart1_write_string(",");
-    at_backOk;
+    at_back_para_ok(VERSION);
     at_state = at_statIdle;
 }
+
+   /*
 void at_CmdState(char *pPara)
 {
 
-   /*
     RFLR_STATE_RX_TIMEOUT,
     RFLR_STATE_TX_INIT,
     RFLR_STATE_TX_RUNNING,
@@ -67,7 +66,7 @@ void at_CmdState(char *pPara)
     RFLR_STATE_CAD_INIT,
     RFLR_STATE_CAD_RUNNING,
 
-*/
+    
     uint8_t state;
     if(*pPara == '?')
     {
@@ -93,15 +92,17 @@ void at_CmdState(char *pPara)
             uart1_write_string("XXX");
             break;
         }
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 
 }
+*/
+
 void at_CmdSleep(char *pPara)
 {
     if(*pPara == '=')
@@ -112,7 +113,7 @@ void at_CmdSleep(char *pPara)
             SX1278SetRFState(RFLR_STATE_IDLE);
             //SX1278Reset();
             SX1278SetOpMode( SX1278_SLEEP );
-            at_backOk;
+            at_back(AT_ERR_OK_ID);
             EnterHalt();
             ExitHalt();
             //SX1278Init();
@@ -121,13 +122,13 @@ void at_CmdSleep(char *pPara)
         else
         {
             SX1278SetRFState(RFLR_STATE_RX_INIT);
-            at_backOk;
+            at_back(AT_ERR_OK_ID);
 
         }
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+            at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
@@ -135,7 +136,7 @@ void at_CmdIdle(char *pPara)
 {
     SX1278SetOpMode( SX1278_SLEEP );
     SX1278SetRFState(RFLR_STATE_IDLE);
-    at_backOk;
+    at_back(AT_ERR_OK_ID);
     at_state = at_statIdle;
 }
 
@@ -155,7 +156,7 @@ void at_CmdConfig(char *pPara)
         pPara++;
         if(CheckPara(pPara) == FALSE) 
         {
-            at_backErr;
+            at_back(AT_ERR_PARA_ID);
             at_state = at_statIdle;
             return ;
         }
@@ -174,7 +175,7 @@ void at_CmdConfig(char *pPara)
         LoRaSettings.PreambleLength = getPara(&pPara,10);
         SX1278Init();
         at_state = at_statIdle;
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
 
     }
     else if(*pPara == '?')
@@ -219,16 +220,16 @@ void at_CmdConfig(char *pPara)
         len = digital2HexString(LoRaSettings.PreambleLength,buf);
         uart1_write((uint8_t*)buf,len);
         uart1_write_string("\r\n");
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
 #else
-        at_backErrorCode(AT_ERR_CMD);
+        at_back(AT_ERR_CMD_ID);
 #endif
         
         
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+            at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
     
@@ -249,7 +250,7 @@ void at_CmdAddr(char *pPara)
         LoRaAddr |= (C2D(*pPara++) ) << 0;
         */  
         LoRaAddr = getPara(&pPara,16);
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else if(*pPara == '?')
     {
@@ -258,15 +259,14 @@ void at_CmdAddr(char *pPara)
         buf[1] = D2C((LoRaAddr&0x0F00) >> 8);
         buf[2] = D2C((LoRaAddr&0x00F0) >> 4);
         buf[3] = D2C((LoRaAddr&0x000F) >> 0);
+        buf[4] = 0;
         
         //len = digital2HexString(LoRaAddr,buf);
-        uart1_write((uint8_t*)buf,4);
-        uart1_write_string(",");
-        at_backOk;
+        at_back_para_ok(buf);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
@@ -277,7 +277,7 @@ void at_CmdDestAddr(char *pPara)
     if(*pPara == '=')
     {
         DestAddr = getPara(&pPara,16);
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else if(*pPara == '?')
     {
@@ -286,28 +286,27 @@ void at_CmdDestAddr(char *pPara)
         buf[1] = D2C((DestAddr&0x0F00) >> 8);
         buf[2] = D2C((DestAddr&0x00F0) >> 4);
         buf[3] = D2C((DestAddr&0x000F) >> 0);
+        buf[4] = 0;
         
         //len = digital2HexString(LoRaAddr,buf);
-        uart1_write((uint8_t*)buf,4);
-        uart1_write_string(",");
-        at_backOk;
+        at_back_para_ok(buf);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
 void at_CmdSaveConfig(char *pPara)
 {
     SaveConfig();
-    at_backOk;
+    at_back(AT_ERR_OK_ID);
     at_state = at_statIdle;
 }
 void at_CmdRxMode(char *pPara)
 {
     SX1278SetRFState(RFLR_STATE_RX_INIT);
-    at_backOk;
+    at_back(AT_ERR_OK_ID);
     at_state = at_statIdle;
 }
 void at_CmdSend(char *pPara)
@@ -319,24 +318,24 @@ void at_CmdSend(char *pPara)
             LoRaPacket.len = getPara(&pPara,10)+4;
             if(LoRaPacket.len > 4 && LoRaPacket.len < 255)
             {
-                at_backOk;
+                at_back(AT_ERR_OK_ID);
                 at_state = at_statTranInit;
                 return;
             }
             else
             {
-                at_backErrorCode(AT_ERR_PARA);
+                at_back(AT_ERR_PARA_ID);
             }
         }
         else
         {
-            at_backErrorCode(AT_ERR_RF_BUSY);
+            at_back(AT_ERR_RF_BUSY_ID);
 
         }
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 
@@ -344,7 +343,7 @@ void at_CmdSend(char *pPara)
 void at_CmdGetRssi(char *pPara)
 {
   
-    uint8_t buf[5];
+    uint8_t buf[6];
     int temp;
     if(*pPara == '?')
     {
@@ -354,12 +353,12 @@ void at_CmdGetRssi(char *pPara)
         buf[2] = temp/10%10 + 0x30;
         buf[3] = temp%10 + 0x30;
         buf[4] = ',';
-        uart1_write(buf,5);
-        at_backOk;
+        buf[5] = '\0';
+        at_back_para_ok(buf);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
@@ -376,23 +375,18 @@ void at_CmdAck(char *pPara)
         }
         else
         {
-            TIM3->CCER1 &= ~TIM_CCER1_CC2E;//输出使能
-            CLK->PCKENR1 &= ~CLK_PCKENR1_TIM3;//关闭定时器PWM输出
-            GPIOD->DDR |= GPIO_Pin_0;//OUTPUT
-            GPIOD->CR1 |= GPIO_Pin_0;//PP
             GPIOD->ODR &= (uint8_t)(~GPIO_Pin_0);
             ack_on = 1;
         }
-        at_state = at_statIdle;
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else
     {
-        at_state = at_statIdle;
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
+    at_state = at_statIdle;
 
-}
+}        
 
 void at_CmdPB0(char *pPara)
 {
@@ -409,8 +403,7 @@ void at_CmdPB0(char *pPara)
             GPIOB->ODR &= (uint8_t)(~GPIO_Pin_0);
         else
             GPIOB->ODR |= GPIO_Pin_0;
-        at_state = at_statIdle;
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else if(*pPara == '?')
     {
@@ -423,15 +416,13 @@ void at_CmdPB0(char *pPara)
         }
         else
             uart1_write_string("0,");
-
-        at_state = at_statIdle;
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else
     {
-        at_state = at_statIdle;
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
+        at_state = at_statIdle;
 
 }
 void at_CmdPC4(char *pPara)
@@ -447,7 +438,7 @@ void at_CmdPC4(char *pPara)
             GPIOC->ODR &= (uint8_t)(~GPIO_Pin_4);
         else
             GPIOC->ODR |= GPIO_Pin_4;
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else if(*pPara == '?')
     {
@@ -461,11 +452,11 @@ void at_CmdPC4(char *pPara)
         }
         else
             uart1_write_string("0,");
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
@@ -483,7 +474,7 @@ void at_CmdPD0(char *pPara)
             GPIOD->ODR &= (uint8_t)(~GPIO_Pin_0);
         else
             GPIOD->ODR |= GPIO_Pin_0;
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else if(*pPara == '?')
     {
@@ -496,11 +487,11 @@ void at_CmdPD0(char *pPara)
         }
         else
             uart1_write_string("0,");
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
@@ -516,17 +507,17 @@ void at_CmdPWM1(char *pPara)
         period = getPara(&pPara,10);
         pulse = getPara(&pPara,10);
         pwm1_config(prescaler,period,pulse);
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
 void at_CmdPWM2(char *pPara)
 {
-
+    ack_on = 0;//关闭Ack响应
     uint8_t prescaler;
     uint16_t period;
     uint16_t pulse; 
@@ -536,11 +527,11 @@ void at_CmdPWM2(char *pPara)
         period = getPara(&pPara,10);
         pulse = getPara(&pPara,10);
         pwm2_config(prescaler,period,pulse);
-        at_backOk;
+        at_back(AT_ERR_OK_ID);
     }
     else
     {
-        at_backErrorCode(AT_ERR_SYMBLE);
+        at_back(AT_ERR_SYMBLE_ID);
     }
     at_state = at_statIdle;
 }
@@ -557,7 +548,7 @@ void at_CmdReg(char *pPara)
     {
         rawValue=getPara(&pPara);
         SX1278Write(reg,rawValue);
-        at_backOk;
+        uart1_write_string(AT_ERR_OK_STR);
     }
     else if(*pPara++ == '?')
     {

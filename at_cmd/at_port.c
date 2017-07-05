@@ -45,7 +45,7 @@ void at_recv_event(char temp)
       if(temp == '\n')
       {
 //      system_os_post(at_busyTaskPrio, 0, 1);
-        at_backErrorCode(AT_ERR_CPU_BUSY);
+        at_back(AT_ERR_CPU_BUSY_ID);
       }
       break;
       
