@@ -35,7 +35,7 @@ void at_recv_event(char temp)
         at_state = at_statProcess;
 
       }
-      else if(pCmdLine >= &at_cmdLine[100])
+      else if(pCmdLine >= &at_cmdLine[at_cmdLenMax - 1])
       {
         at_state = at_statIdle;
       }

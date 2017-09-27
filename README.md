@@ -1,5 +1,5 @@
 # STM8_Lora
-This project is used for Ting-01M module Edit
+This project is used for Ting-01M module
 
 
 # shop
